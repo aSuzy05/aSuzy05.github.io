@@ -1,0 +1,287 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>try{var t=localStorage.getItem('theme');if(t==='light'||t==='dark')document.documentElement.dataset.theme=t}catch(e){}</script>
+<title>Suivi de projets internationaux · Suzanne Dong</title>
+<meta name="description" content="Tableau de bord Power BI de pilotage d'un portefeuille de projets internationaux par les écarts entre planifié et réalisé.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..700&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+<a class="skip" href="#main">Aller au contenu</a>
+
+<header class="site-head">
+  <div class="shell head-in">
+    <a class="brand" href="../index.html">Suzanne Dong <span>Data Analyst</span></a>
+    <nav class="site-nav" aria-label="Navigation principale">
+      <!-- <a href="../index.html#phares">Missions phares</a> -->
+      <a href="../index.html#competences">Compétences</a>
+      <a href="../index.html#missions">Projets</a>
+      <a href="../veille.html">Veille</a>
+      <a href="../index.html#contact">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+  <section class="m-hero shell">
+    <p class="eyebrow">Mission P07 · Business Intelligence</p>
+    <h1>Piloter un portefeuille de projets par les écarts</h1>
+    <div class="m-meta">
+      <span><b>Juin 2025</b></span>
+      <span>Commanditaire : <b>Direction de projets (PMO)</b></span>
+      <span>Secteur : <b>Conseil / ESN</b></span>
+    </div>
+    <div class="tags">
+      <span class="tag">Power BI</span><span class="tag">DAX</span>
+      <span class="tag">Gantt</span><span class="tag">Cartographie</span>
+      <span class="tag">Recueil du besoin</span>
+    </div>
+  </section>
+
+  <div class="shell m-grid">
+
+    <aside class="rail">
+      <p class="rail-t">Sommaire</p>
+      <ol>
+        <li><a href="#contexte">Contexte &amp; besoin métier</a></li>
+        <li><a href="#donnees">Données</a></li>
+        <li><a href="#demarche">Démarche</a></li>
+        <li><a href="#resultats">Résultats &amp; impact</a></li>
+        <li><a href="#limites">Limites &amp; pistes</a></li>
+      </ol>
+    </aside>
+
+    <article class="m-body">
+
+      <ul class="kpis">
+        <li><span class="kpi-v">3</span><span class="kpi-l">niveaux de décision servis par un même outil</span></li>
+        <li><span class="kpi-v">15 %</span><span class="kpi-l">seuil d'alerte sur les écarts</span></li>
+        <li><span class="kpi-v">5</span><span class="kpi-l">pages de rapport reliées par signets</span></li>
+      </ul>
+
+      <!-- 01 -->
+      <section class="sec" id="contexte">
+        <h2 class="sec-h"><span class="sec-n">01</span> Contexte &amp; besoin métier</h2>
+        <p>
+          Besoin : repérer les projets en difficulté (retard, surcoût, livrables non conformes) et alerter, pour que chaque niveau hiérarchique agisse dans son périmètre.
+        </p>
+
+        <h3>Profils d'utilisateurs </h3>
+        <ul class="bullets">
+          <li><strong>Le directeur général</strong> décide de poursuivre ou d'arrêter un projet, veut être alerté des écarts significatifs et suivre la performance globale.</li>
+          <li><strong>Les directeurs régionaux</strong> interviennent auprès des directeurs de pays en cas de dérive et suivent les projets de leur région.</li>
+          <li><strong>Les directeurs de pays</strong> prennent les mesures correctives sur les projets dont ils ont la responsabilité.</li>
+        </ul>
+
+        <figure class="fig fig--large">
+          <img src="../assets/img/missions/p07-product-strategy-canvas.png"
+               alt="Product Strategy Canvas du projet : un tableau identifiant le rédacteur, le client, l'objectif du tableau de bord, puis trois profils d'utilisateurs (directeur général, directeurs régionaux, directeurs de pays) associés chacun à trois user stories.">
+          <figcaption><span class="fig-n">Fig. 1</span>
+            Le canevas de cadrage. Chaque besoin est formulé comme une action attendue. Il permet ensuite de déterminer les mesures à construire.
+          </figcaption>
+        </figure>
+
+        <div class="why">
+          <p class="why-l">Pourquoi identifier les profils</p>
+          <p>
+            Trois profils veulent la même information à trois échelles différentes.
+            Identifier les profils évite de construire un rapport unique.
+          </p>
+        </div>
+      </section>
+
+      <!-- 02 -->
+      <section class="sec" id="donnees">
+        <h2 class="sec-h"><span class="sec-n">02</span> Données</h2>
+        <p>
+          Données de suivi de projet articulant systématiquement une valeur <strong>planifiée</strong>
+          et une valeur <strong>réalisée</strong> : durées, coûts, livrables, dates, par
+          identifiant de projet, phase, type et localisation. Un référentiel de profils pays
+          complète l'ensemble.
+        </p>
+
+        <h3>Qualité et limites</h3>
+        <ul class="bullets">
+          <li><strong>La donnée est déclarative.</strong> Elle est saisie par les équipes projet ; un retard non déclaré reste invisible dans le tableau de bord.</li>
+          <li><strong>Les livrables sont hétérogènes</strong> d'un type de projet à l'autre, ce qui limite la comparaison directe entre projets de nature différente.</li>
+        </ul>
+      </section>
+
+      <!-- 03 -->
+      <section class="sec" id="demarche">
+        <h2 class="sec-h"><span class="sec-n">03</span> Démarche</h2>
+
+        <ol class="steps">
+          <li>
+            <h3>Modéliser autour du couple planifié / réalisé</h3>
+            <p>
+              Le modèle sépare les tables de planification des tables de réalisation (coûts, durées, livrables), reliées aux dimensions projet, localisation et type. Une table
+              dédiée regroupe l'ensemble des mesures calculées.
+            </p>
+          </li>
+
+          <li>
+            <h3>Mesurer l'écart en valeur <em>et</em> en pourcentage</h3>
+            <p>
+              Pour chacune des trois dimensions suivies, deux mesures ont été construites :
+              l'écart absolu et l'écart relatif entre planifié et réalisé.
+            </p>
+            <div class="why">
+              <p class="why-l">Pourquoi ce choix</p>
+              <p>
+                Les deux lectures sont nécessaires et ne disent pas la même chose. Un surcoût
+                de 50 k€ représente une dérive de 100 % sur un projet de 50 k€ et de 1 % sur un
+                projet de 5 M€. <strong>Le pourcentage mesure la maîtrise du projet, la valeur
+                absolue mesure l'impact financier.</strong>
+              </p>
+              <p>
+                Un directeur de pays a besoin du premier pour savoir si son équipe dérape ; un
+                directeur général a besoin du second pour savoir où se joue le risque budgétaire.
+              </p>
+            </div>
+          </li>
+
+          <li>
+            <h3>Fixer un seuil d'alerte à 15 %</h3>
+            <p>
+              Chaque écart supérieur à 15 % déclenche une alerte, puis on compte les projets et les pays concernés.
+            </p>
+            <div class="why">
+              <p class="why-l">Pourquoi un seuil</p>
+              <p>
+                Sans seuil, chacun juge à sa façon si un écart est grave. Un seuil clair <strong>donne la même règle à tout le monde</strong>.
+              </p>
+              <p>
+                La valeur de 15 % est fixée par le commanditaire et peut être ajustée selon le type de projet.
+              </p>
+            </div>
+          </li>
+
+          <li>
+            <h3>Compter les pays autant que les projets</h3>
+            <p>
+              Des mesures dédiées dénombrent les <strong>pays</strong> en retard, en surcoût ou
+              présentant un livrable supplémentaire, en parallèle des compteurs par projet.
+            </p>
+            <div class="why">
+              <p class="why-l">Pourquoi ce choix</p>
+              <p>
+                Dix projets en retard concentrés sur un seul pays relèvent d'un problème local : une équipe, un contexte réglementaire, un fournisseur. Dix projets en retard
+                répartis sur dix pays relèvent d'un problème de méthode.</p>
+            </div>
+          </li>
+
+          <li>
+            <h3>Cinq onglets, un besoin défini</h3>
+            <p>
+              Suivi par région, suivi par région et pays, suivi détaillé des projets,
+               étapes pour la mise à jour des données et canevas de cadrage. Cartes géographiques, tableaux
+              croisés, cartes d'indicateurs et diagrammes de Gantt personnalisés composent les vues.
+            </p>
+            <div class="why">
+              <p class="why-l">Pourquoi des signets plutôt que des filtres</p>
+              <p>
+                Les signets mémorisent un état complet du rapport et permettent de naviguer d'un
+                clic entre des vues préconfigurées. L'utilisateur n'a pas à reconstruire une
+                combinaison de filtres.
+              </p>
+            </div>
+          </li>
+        </ol>
+
+        <figure class="fig fig--large">
+          <img src="../assets/img/missions/p07-suivi-projets-gantt.png"
+               alt="Page Power BI « Dashboard, Suivi des projets ». En haut, trois compteurs : 8 projets en retard sur 104 (7,7 %), 28 en surcoût sur 104 (26,9 %), 0 livrable supplémentaire. À gauche, des filtres par date, région et pays, type de projet et phase. Au centre, des boutons Durée, Coût et Livrables et un diagramme de Gantt des phases de chaque projet. En bas, trois tableaux détaillant les écarts de durée, de coût et de livrables par type de projet.">
+          <figcaption><span class="fig-n">Fig. 2</span>
+            La page « Suivi des projets ». Les boutons Durée, Coût et Livrables changent la vue
+            centrale. Le diagramme de Gantt montre les phases de chaque projet dans le temps, et
+            les filtres de gauche réduisent l'affichage à une période, un pays, un type de projet
+            ou une phase. En haut : <strong>8 projets en retard et 28 en surcoût sur 104</strong>.
+          </figcaption>
+        </figure>
+      </section>
+
+      <!-- 04 -->
+      <section class="sec" id="resultats">
+        <h2 class="sec-h"><span class="sec-n">04</span> Résultats &amp; impact</h2>
+        <p class="lede">
+          Le tableau de bord condense l'état du portefeuille en quelques compteurs de synthèse :
+          nombre de projets et de pays en retard, en surcoût, ou présentant un livrable
+          supplémentaire.
+        </p>
+
+        <figure class="fig fig--large">
+          <img src="../assets/img/missions/p07-suivi-pays.png"
+               alt="Page Power BI « Dashboard, Suivi des projets par pays ». En haut, trois compteurs : 2 pays sur 52 avec un projet en retard (3,8 %), 16 pays sur 52 en surcoût (30,8 %), 0 livrable supplémentaire. Au centre, une carte du monde colorée selon l'écart de durée, l'Égypte en rouge, avec un filtre par région. À droite, trois tableaux classant les pays par écart de durée, de coût et de livrables ; l'Égypte (+94,70 %) et le Liban (+16,33 %) sont en tête pour la durée.">
+          <figcaption><span class="fig-n">Fig. 3</span>
+            La page « Suivi des projets par pays ». Sur 52 pays, <strong>2 ont un projet en
+            retard</strong> au-delà du seuil de 15 % (l'Égypte et le Liban) et <strong>16 sont en
+            surcoût</strong>. La carte situe les dérives, et les tableaux de droite classent les
+            pays par écart de durée, de coût et de livrables.
+          </figcaption>
+        </figure>
+
+        <h3>Ce que l'outil change</h3>
+        <ul class="bullets">
+          <li><strong>Les projets en dérive se repèrent tout de suite</strong>, sans parcourir chaque ligne.</li>
+          <li><strong>La carte montre les zones à traiter en premier</strong>, et aide à distinguer un problème local d'un problème général.</li>
+          <li><strong>Chaque niveau hiérarchique a sa vue.</strong> Les neuf besoins recensés au cadrage trouvent chacun leur réponse dans une page du rapport.</li>
+          <li><strong>Les livrables en plus sont suivis comme un écart</strong>, car ils coûtent du budget et du temps non prévus.</li>
+        </ul>
+
+        <h3>Recommandations</h3>
+        <ul class="bullets">
+          <li><strong>Organiser une revue régulière</strong> avec le tableau de bord : sans rendez-vous régulier, l'outil n'est consulté qu'en cas de crise.</li>
+          <li><strong>Ajuster le seuil par type de projet.</strong> 15 % sur un projet d'infrastructure et 15 % sur une mission courte n'ont pas la même signification.</li>
+          <li><strong>Fiabiliser la saisie à la source</strong> : c'est le principal levier de qualité, et il relève de l'organisation plus que de la technique.</li>
+        </ul>
+      </section>
+
+      <!-- 05 -->
+      <section class="sec" id="limites">
+        <h2 class="sec-h"><span class="sec-n">05</span> Limites &amp; prochaines pistes</h2>
+        <p>
+          <strong>L'outil ne vaut que ce que vaut la donnée saisie.</strong> Un tableau de bord
+          de pilotage alimenté irrégulièrement fausse les résultats.
+        </p>
+        <p>
+          <strong>Le suivi constate les écarts survenus ; il ne les
+          anticipe pas. Un projet qui va déraper le mois prochain apparaît encore conforme.
+        </p>
+        <p>
+          <strong>Le seuil unique est une simplification.</strong> Il traite de la même manière
+          des projets de nature et de durée très différentes.
+        </p>
+
+        <h3>Prochaines pistes</h3>
+        <ul class="bullets">
+          <li>Paramétrer les seuils par type de projet plutôt que d'appliquer une valeur unique.</li>
+          <li>Automatiser l'alimentation depuis l'outil de gestion de projet pour supprimer la ressaisie et son délai.</li>
+          <li>Mettre en place des alertes poussées vers les directeurs concernés, plutôt que d'attendre qu'ils ouvrent le rapport.</li>
+        </ul>
+      </section>
+
+    </article>
+  </div>
+
+  <nav class="shell m-nav" aria-label="Navigation entre les missions">
+    <a href="p08-egalite-femmes-hommes.html"><span>← Mission précédente</span><strong>Index d'égalité femmes-hommes</strong></a>
+    <a class="nx" href="p06-bottleneck.html"><span>Mission suivante →</span><strong>Performance produit BottleNeck</strong></a>
+  </nav>
+
+</main>
+
+<footer class="site-foot shell">
+  <span>Suzanne Dong · Data Analyst · <a href="mailto:dong.suzanne@hotmail.com">dong.suzanne@hotmail.com</a></span>
+  <span><a href="../index.html">Accueil</a> · <a href="#main">Haut de page</a></span>
+</footer>
+
+<script src="../assets/js/main.js"></script>
+</body>
+</html>

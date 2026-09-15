@@ -1,0 +1,405 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>try{var t=localStorage.getItem('theme');if(t==='light'||t==='dark')document.documentElement.dataset.theme=t}catch(e){}</script>
+<title>BottleNeck, version améliorée · Suzanne Dong</title>
+<meta name="description" content="Reprise en 2026 de l'analyse des ventes et des stocks de BottleNeck : cahier des charges, planning, outils d'analyse exploratoire comparés, anomalies corrigées et chiffres recalculés.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..700&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+<a class="skip" href="#main">Aller au contenu</a>
+
+<header class="site-head">
+  <div class="shell head-in">
+    <a class="brand" href="../index.html">Suzanne Dong <span>Data Analyst</span></a>
+    <nav class="site-nav" aria-label="Navigation principale">
+      <!-- <a href="../index.html#phares">Missions phares</a> -->
+      <a href="../index.html#competences">Compétences</a>
+      <a href="../index.html#missions">Projets</a>
+      <a href="../veille.html">Veille</a>
+      <a href="../index.html#contact">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+  <section class="m-hero shell">
+    <p class="eyebrow">Mission P13 · Projet amélioré</p>
+    <h1>BottleNeck, version améliorée</h1>
+    <div class="m-meta">
+      <span><b>Septembre 2026</b></span>
+      <span>Client : <b>BottleNeck</b>, vins &amp; spiritueux en ligne</span>
+      <span>Reprise de : <a href="p06-bottleneck.html"><b>P06</b></a>, avril 2025</span>
+    </div>
+    <div class="tags">
+      <span class="tag">Python</span><span class="tag">pandas 3.0</span>
+      <span class="tag">Sweetviz</span><span class="tag">Qualité des données</span>
+      <span class="tag">Cahier des charges</span><span class="tag">Notion</span>
+      <span class="tag">Claude Code</span>
+    </div>
+  </section>
+
+  <div class="shell m-grid">
+
+    <aside class="rail">
+      <p class="rail-t">Sommaire</p>
+      <ol>
+        <li><a href="#contexte">Contexte &amp; besoin métier</a></li>
+        <li><a href="#donnees">Données</a></li>
+        <li><a href="#demarche">Démarche</a></li>
+        <li><a href="#resultats">Résultats &amp; impact</a></li>
+        <li><a href="#limites">Limites &amp; pistes</a></li>
+      </ol>
+    </aside>
+
+    <article class="m-body">
+
+      <ul class="kpis">
+        <li><span class="kpi-v">143 680 €</span><span class="kpi-l">de chiffre d'affaires recalculé, contre 154 798 € en 2025</span></li>
+        <li><span class="kpi-v">825</span><span class="kpi-l">produits de l'ERP analysés, aucun écarté</span></li>
+        <li><span class="kpi-v">8</span><span class="kpi-l">semaines de projet, du diagnostic au portfolio</span></li>
+      </ul>
+
+      <!-- 01 -->
+      <section class="sec" id="contexte">
+        <h2 class="sec-h"><span class="sec-n">01</span> Contexte &amp; besoin métier</h2>
+        <p class="lede">
+          Ce projet reprend l'analyse des ventes et des stocks de BottleNeck réalisée en 2025
+          (<a href="p06-bottleneck.html">P06</a>), pour fiabiliser les données et accélérer leur contrôle.
+        </p>
+        <p>
+          La relecture du notebook de 2025 a montré que les contrôles de cohérence étaient faits à la main, variable par variable. Ils prenaient du temps et des erreurs pouvaient passer inaperçues. Les résultats n'étaient lisibles que par un profil technique.
+        </p>
+        <p>
+          L'analyse est commandée par le responsable des ventes. Ses résultats sont destinés au comité de
+          direction, qui doit pouvoir s'appuyer dessus pour décider.
+        </p>
+
+        <h3>Critères de réussite fixés au départ</h3>
+        <ul class="bullets">
+          <li><strong>Aucune valeur manquante</strong> sur les champs utilisés dans les calculs : identifiants, prix et stock.</li>
+          <li><strong>Des données cohérentes</strong> : prix et stocks positifs, statut de stock conforme à la quantité, aucun doublon d'identifiant.</li>
+          <li><strong>Deux méthodes de détection des prix atypiques</strong> comparées, et chaque prix atypique conservé justifié.</li>
+          <li><strong>Un notebook reproductible</strong> : exécuté en entier, il donne le même fichier final à chaque fois.</li>
+        </ul>
+      </section>
+
+      <!-- 02 -->
+      <section class="sec" id="donnees">
+        <h2 class="sec-h"><span class="sec-n">02</span> Données</h2>
+        <p>
+          Les trois fichiers Excel de la version 2025 : une extraction arrêtée au 31 octobre, avec les
+          ventes du mois d'octobre. Ils ne contiennent aucune donnée personnelle.
+        </p>
+        <div class="dtable">
+          <table>
+            <caption>Sources à rapprocher</caption>
+            <thead>
+              <tr><th scope="col">Fichier</th><th scope="col">Contenu</th><th scope="col" class="num">Colonnes</th><th scope="col" class="num">Lignes</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>ERP</td><td>Prix de vente et d'achat, stock, statut de stock</td><td class="num">6</td><td class="num">825</td></tr>
+              <tr><td>Site marchand</td><td>Ventes et fiches produit</td><td class="num">29</td><td class="num">1 513</td></tr>
+              <tr><td>Table de liaison</td><td>Correspondance entre identifiants ERP et web</td><td class="num">2</td><td class="num">825</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>Anomalies repérées</h3>
+        <ul class="bullets">
+          <li><strong>3 prix de vente négatifs</strong> dans l'ERP (−20 €, −9,10 € et −8 €).</li>
+          <li><strong>2 stocks négatifs</strong> (−10 et −1), et 2 produits dont le statut contredit la quantité en stock.</li>
+          <li><strong>1 513 lignes pour 714 identifiants sur le site</strong> : 85 lignes sans identifiant, et la plupart des produits présents sur deux lignes.</li>
+          <li><strong>4 produits présents deux fois avec des ventes différentes</strong>, par exemple 116 et 6 bouteilles pour le même champagne.</li>
+          <li><strong>91 produits de l'ERP sans identifiant web</strong>, donc absents du site marchand.</li>
+        </ul>
+      </section>
+
+      <!-- 03 -->
+      <section class="sec" id="demarche">
+        <h2 class="sec-h"><span class="sec-n">03</span> Démarche</h2>
+
+        <ol class="steps">
+          <li>
+            <h3>Cadrer et planifier le projet</h3>
+            <p>
+              Un cahier des charges a d'abord été rédigé : contexte, parties prenantes, périmètre traité et
+              non traité, contraintes, ressources et critères de réussite. Il comprend aussi un plan de
+              formation pour les lecteurs non techniques, présenté sur la
+              <a href="../veille.html#formation">page Veille</a>.
+            </p>
+            <p>
+              Le projet a ensuite été découpé en 7 lots dans Notion, du diagnostic du notebook jusqu'au
+              portfolio. Chaque lot a ses dates, ses dépendances, une priorité et une définition de ce qui
+              est « terminé ».
+            </p>
+            <div class="why">
+              <p class="why-l">Pourquoi ce choix</p>
+              <p>
+                Un lot ne commence que lorsque celui dont il dépend est terminé. Sans relecture extérieure,
+                chaque étape est validée en vérifiant que l'objectif fixé dans le planning est atteint.
+              </p>
+            </div>
+          </li>
+        </ol>
+
+        <figure class="fig fig--large">
+          <img src="../assets/img/missions/p13-planning-lots.png"
+               alt="Tableau Notion des lots du projet avec leurs dates, objectifs, dépendances, charge, critères de fin et état : Cadrage et diagnostic, Veille métier et technologique, Cahier des charges fonctionnel, Documentation, Organisation du projet, Synthèse et Portfolio.">
+          <figcaption><span class="fig-n">Fig. 1</span>
+            Le planning dans Notion : 7 lots, de « Cadrage &amp; diagnostic » (19 juillet 2026) à
+            « Portfolio » (13 septembre 2026), avec pour chacun l'objectif, les dépendances, la priorité
+            et l'état d'avancement.
+          </figcaption>
+        </figure>
+
+        <figure class="fig fig--large">
+          <img src="../assets/img/missions/p13-planning-chronologie.png"
+               alt="Vue chronologique Notion de juillet à août 2026 : le lot Cadrage et diagnostic et ses trois tâches, puis le lot Veille métier et technologique, dont les tâches Veille Pandas, Flux RSS et Application des évolutions Pandas dépendent du Comparatif outils EDA.">
+          <figcaption><span class="fig-n">Fig. 2</span>
+            Vue chronologique des deux premiers lots, de fin juillet à début août 2026. Les liens montrent
+            les dépendances : la veille sur Pandas, le flux RSS et l'application des évolutions dans le
+            notebook partent du comparatif des outils.
+          </figcaption>
+        </figure>
+
+        <ol class="steps" start="2">
+          <li>
+            <h3>Comparer des outils pour accélérer le diagnostic</h3>
+            <p>
+              Quatre outils ont été testés sur le fichier ERP : Pandas, Polars, D-Tale et Sweetviz. Deux
+              autres, ydata-profiling et AutoViz, n'ont pas pu être utilisés à cause de conflits entre
+              versions de bibliothèques. Le détail de la comparaison est présenté sur la
+              <a href="../veille.html#metier">page Veille</a>.
+            </p>
+            <div class="why">
+              <p class="why-l">Pourquoi Pandas et Sweetviz</p>
+              <p>
+                Polars lit le fichier plus vite que Pandas (0,006 contre 0,2 seconde), mais sur 825 lignes la différence ne se remarque pas, et ses résultats sont aussi techniques. Pandas est donc gardé pour le diagnostic détaillé, et Sweetviz pour le rapport destiné au responsable des ventes, qui s'ouvre sans notebook. D-Tale est écarté, car il rend les données accessibles depuis le réseau pendant son exécution.
+              </p>
+            </div>
+          </li>
+
+          <li>
+            <h3>Mettre en place une veille automatisée sur Pandas</h3>
+            <p>
+              La page des notes de version de Pandas n'a pas de flux RSS. Elle a été convertie en flux avec
+              RSS.app, puis ajoutée à Feedly. Les nouvelles versions y apparaissent sans recherche manuelle,
+              mais aucune alerte n'est envoyée.
+            </p>
+          </li>
+        </ol>
+
+        <figure class="fig">
+          <img src="../assets/img/veille-rss-app.png"
+               alt="Page RSS.app du flux « Pandas - Release notes » créé à partir de pandas.pydata.org/docs/whatsnew, avec l'adresse du flux et la dernière entrée « What's new in 3.0.5 (July 22, 2026) ».">
+          <figcaption><span class="fig-n">Fig. 3</span>
+            Le flux créé dans RSS.app à partir de la page des notes de version de Pandas. La dernière
+            entrée, « What's new in 3.0.5 », date du 22 juillet 2026.
+          </figcaption>
+        </figure>
+
+        <figure class="fig">
+          <img src="../assets/img/veille-feedly.png"
+               alt="Feedly avec le flux « Pandas - Release notes » rangé dans un dossier Python, affichant les entrées « What's new in 3.0.5 » du 22 juillet 2026 et « What's new in 3.0.4 » du 28 juin 2026.">
+          <figcaption><span class="fig-n">Fig. 4</span>
+            Le flux ajouté à Feedly, dans un dossier Python. Les nouvelles versions de Pandas y
+            apparaissent sans recherche manuelle. Seul le titre est récupéré : le détail se lit dans la
+            documentation.
+          </figcaption>
+        </figure>
+
+        <ol class="steps" start="4">
+          <li>
+            <h3>Corriger les prix et les stocks négatifs</h3>
+            <p>
+              En 2025, les 3 produits aux prix négatifs avaient été supprimés. Cette fois, le signe est corrigé et
+              les produits restent dans l'analyse. Les 2 stocks négatifs passent à zéro, et le statut de
+              stock est recalculé à partir de la quantité. Un contrôle après chaque correction vérifie qu'il
+              ne reste aucune valeur négative ni aucun statut incohérent.
+            </p>
+            <div class="why">
+              <p class="why-l">Pourquoi corriger le signe</p>
+              <p>
+                Une fois le signe retiré, ces prix valent entre 1,8 et 2 fois leur prix d'achat. C'est
+                l'écart habituel du catalogue, où le prix de vente médian vaut 1,91 fois le prix d'achat
+                médian. Une erreur de signe à la saisie est donc l'explication la plus probable.
+              </p>
+            </div>
+          </li>
+
+          <li>
+            <h3>Dédoublonner les ventes du site</h3>
+            <p>
+              Sur le site, 4 produits apparaissaient deux fois avec des ventes différentes. Pour chacun,
+              seule la valeur la plus basse est gardée. Le fichier compte ensuite une ligne par identifiant,
+              soit 714 produits.
+            </p>
+            <div class="why">
+              <p class="why-l">Pourquoi garder la valeur la plus basse</p>
+              <p>
+                Les valeurs hautes reprennent la valeur basse précédée d'un ou deux chiffres : 6 et 116,
+                11 et 111, 22 et 122, 2 et 22. Trois d'entre elles dépassent 100 ventes, alors que le produit
+                le plus vendu du fichier corrigé en compte 36. Ce sont très probablement des erreurs de
+                saisie. En 2025, ces doublons avaient été conservés.
+              </p>
+            </div>
+          </li>
+
+          <li>
+            <h3>Relancer le diagnostic sur la table finale</h3>
+            <p>
+              Les trois fichiers sont rapprochés par deux jointures, comme en 2025. Les contrôles utilisés sur les fichiers sources sont regroupés dans un fichier à part, puis relancés sur la table finale :
+              825 lignes, aucun doublon, et 111 produits sans ventes sur le site.
+            </p>
+            <div class="why">
+              <p class="why-l">Pourquoi regrouper les contrôles</p>
+              <p>
+                Les mêmes contrôles servent à chaque étape sans recopier le code. Si une nouvelle extraction
+                arrive, il suffit de relancer la même fonction.
+              </p>
+            </div>
+          </li>
+
+          <li>
+            <h3>Choisir une méthode de référence pour les prix atypiques</h3>
+            <p>
+              Deux méthodes ont été comparées. Le Z-score (prix à plus de 3 écarts-types de la moyenne)
+              signale 17 articles, tous au-dessus de 114 €. L'écart interquartile en signale 36, soit 4,4 %
+              du catalogue, au-delà de 83,25 €.
+            </p>
+            <div class="why">
+              <p class="why-l">Pourquoi l'écart interquartile</p>
+              <p>
+                Quelques articles très chers tirent la moyenne des prix vers le haut. Le Z-score est calculé à partir de cette moyenne : il est donc influencé par ces articles. L'écart interquartile se base sur la moitié centrale des prix, que ces articles modifient très peu.
+              </p>
+              <p>
+                Les 36 articles sont conservés : il s'agit de cognacs, whiskies, champagnes et vins haut de
+                gamme, dont le prix élevé paraît cohérent.
+              </p>
+            </div>
+          </li>
+
+          <li>
+            <h3>Documenter l'usage de l'IA</h3>
+            <p>
+              Claude Code a été utilisé comme aide, surtout pour comparer les outils et comprendre des erreurs d'installation. Seuls les échanges qui ont changé quelque chose au projet sont documentés, avec la vérification faite et la décision prise.
+            </p>
+            <div class="why">
+              <p class="why-l">Deux exemples de vérification</p>
+              <p>
+                L'IA avait expliqué que D-Tale ouvre un accès réseau aux données. Cette explication a été
+                vérifiée en lançant D-Tale puis une commande dans un terminal, avant d'écarter l'outil.
+              </p>
+              <p>
+                Elle avait aussi proposé d'écrire que les nouveautés de Pandas étaient « reçues
+                automatiquement ». La formulation a été retirée : le flux collecte les nouveautés, mais
+                aucune alerte n'est configurée.
+              </p>
+            </div>
+          </li>
+        </ol>
+      </section>
+
+      <!-- 04 -->
+      <section class="sec" id="resultats">
+        <h2 class="sec-h"><span class="sec-n">04</span> Résultats &amp; impact</h2>
+        <p class="lede">
+          Après correction, le chiffre d'affaires baisse de 11 118 € (−7,2 %) par rapport à la version 2025, et le lien entre prix et ventes est plus marqué.
+        </p>
+
+        <div class="dtable">
+          <table>
+            <caption>Version 2025 et version améliorée</caption>
+            <thead>
+              <tr><th scope="col">Indicateur</th><th scope="col">2025 (P06)</th><th scope="col">2026 (P13)</th></tr>
+            </thead>
+            <tbody>
+              <tr><th scope="row">Lignes de la table finale</th><td>827, doublons compris</td><td>825, une par produit</td></tr>
+              <tr><th scope="row">Prix négatifs</th><td>3 produits supprimés</td><td>3 signes corrigés</td></tr>
+              <tr><th scope="row">Ventes en double sur le site</th><td>Conservées</td><td>4 corrigées</td></tr>
+              <tr><th scope="row">Chiffre d'affaires</th><td>154 798 €</td><td>143 680 €</td></tr>
+              <tr><th scope="row">Stock valorisé au prix d'achat HT</th><td>252 906 €</td><td>248 857 €</td></tr>
+              <tr><th scope="row">Corrélation prix / ventes</th><td>−0,27</td><td>−0,52</td></tr>
+              <tr><th scope="row">Corrélation stock / ventes</th><td>0,29</td><td>0,45</td></tr>
+              <tr><th scope="row">Prix atypiques (écart interquartile)</th><td>36</td><td>36</td></tr>
+              <tr><th scope="row">Contrôles de cohérence</th><td>Manuels</td><td>Vérifiés après chaque correction et relancés sur la table finale</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>Constats</h3>
+        <ul class="bullets">
+          <li><strong>Le chiffre d'affaires de 2025 était surestimé de 11 118 €.</strong> Tout l'écart vient des ventes comptées deux fois : 4 produits aux ventes gonflées (10 943 €) et un bon cadeau (175 €).</li>
+          <li><strong>Le prix a plus d'influence sur les ventes que ne le montrait la version 2025.</strong> La corrélation passe de −0,27 à −0,52 : les ventes gonflées masquaient en partie ce lien. Les articles les moins chers se vendent mieux.</li>
+          <li><strong>Les contrôles font partie du notebook.</strong> À chaque exécution, ils vérifient les prix et stocks négatifs, les statuts de stock et les doublons.</li>
+          <li><strong>Le responsable des ventes peut lire le diagnostic.</strong> Le rapport Sweetviz s'ouvre sans notebook et montre les valeurs manquantes et les anomalies à faire corriger.</li>
+        </ul>
+
+        <h3>Recommandations</h3>
+        <ul class="bullets">
+          <li><strong>Vérifier les 4 produits à marge négative</strong> avec le responsable des ventes, en commençant par le champagne vendu 12,65 € pour un prix d'achat de 77,48 €.</li>
+          <li><strong>Uniformiser la codification des références produit</strong> dans l'ERP et sur le site, pour éviter les identifiants absents ou non conformes.</li>
+          <li><strong>Automatiser le rapprochement des trois fichiers</strong> si les extractions deviennent régulières.</li>
+          <li><strong>Écrire les règles de qualité dans un outil dédié comme Pandera</strong>, pour qu'elles soient vérifiées automatiquement à chaque nouvelle extraction.</li>
+          <li><strong>Retester ydata-profiling</strong> quand ses dépendances seront compatibles, et suivre les prochaines versions de Pandas grâce au flux de veille.</li>
+        </ul>
+      </section>
+
+      <!-- 05 -->
+      <section class="sec" id="limites">
+        <h2 class="sec-h"><span class="sec-n">05</span> Limites &amp; prochaines pistes</h2>
+        <p>
+          <strong>La correction des doublons repose sur une hypothèse.</strong> Garder la valeur de ventes
+          la plus basse est cohérent avec les données, mais doit être confirmé par le responsable des ventes.
+        </p>
+        <p>
+          <strong>La comparaison des outils reste partielle.</strong> ydata-profiling et AutoViz n'ont pas
+          pu être testés jusqu'au bout à cause de conflits entre versions de bibliothèques.
+        </p>
+        <p>
+          <strong>Les prix atypiques sont conservés sur un jugement métier</strong>, sans validation
+          statistique supplémentaire. Des anomalies qui combinent plusieurs variables peuvent aussi passer
+          inaperçues.
+        </p>
+        <p>
+          <strong>L'analyse porte sur un seul mois de ventes.</strong> Elle ne permet pas de suivre
+          l'évolution de l'activité ni de repérer une saisonnalité.
+        </p>
+        <p>
+          <strong>Le suivi des versions s'est fait par le nom des fichiers</strong>, sans outil de gestion
+          de versions ni relecture extérieure.
+        </p>
+
+        <h3>Prochaines pistes</h3>
+        <ul class="bullets">
+          <li>Relancer l'analyse sur plusieurs mois d'extractions pour suivre l'évolution des ventes et des stocks.</li>
+          <li>Utiliser une nouveauté de Pandas 3.0 pour repérer en une seule étape les produits de l'ERP absents du site.</li>
+          <li>Suivre les versions du notebook avec Git.</li>
+        </ul>
+      </section>
+
+    </article>
+  </div>
+
+  <nav class="shell m-nav" aria-label="Navigation entre les missions">
+    <a href="p02-grand-marche.html"><span>← Mission précédente</span><strong>Chute de chiffre d'affaires</strong></a>
+    <a class="nx" href="p12-faux-billets.html"><span>Mission suivante →</span><strong>Détection de faux billets</strong></a>
+  </nav>
+
+</main>
+
+<footer class="site-foot shell">
+  <span>Suzanne Dong · Data Analyst · <a href="mailto:dong.suzanne@hotmail.com">dong.suzanne@hotmail.com</a></span>
+  <span><a href="../index.html">Accueil</a> · <a href="#main">Haut de page</a></span>
+</footer>
+
+<script src="../assets/js/main.js"></script>
+</body>
+</html>

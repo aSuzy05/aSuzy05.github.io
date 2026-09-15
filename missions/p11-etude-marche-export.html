@@ -1,0 +1,334 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>try{var t=localStorage.getItem('theme');if(t==='light'||t==='dark')document.documentElement.dataset.theme=t}catch(e){}</script>
+<title>Étude de marché à l'export · Suzanne Dong</title>
+<meta name="description" content="Analyse en composantes principales et clustering de 103 pays pour cibler les marchés d'export d'une filière avicole biologique.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..700&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+<a class="skip" href="#main">Aller au contenu</a>
+
+<header class="site-head">
+  <div class="shell head-in">
+    <a class="brand" href="../index.html">Suzanne Dong <span>Data Analyst</span></a>
+    <nav class="site-nav" aria-label="Navigation principale">
+      <!-- <a href="../index.html#phares">Missions phares</a> -->
+      <a href="../index.html#competences">Compétences</a>
+      <a href="../index.html#missions">Projets</a>
+      <a href="../veille.html">Veille</a>
+      <a href="../index.html#contact">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+  <section class="m-hero shell">
+    <p class="eyebrow">Mission P11 · Analyse multivariée</p>
+    <h1>Choisir où exporter, parmi 103 pays</h1>
+    <div class="m-meta">
+      <span><b>Mars 2026</b></span>
+      <span>Client : <b>La poule qui chante</b>, filière avicole biologique</span>
+      <span>Secteur : <b>Agroalimentaire</b></span>
+    </div>
+    <div class="tags">
+      <span class="tag">Python</span><span class="tag">scikit-learn</span>
+      <span class="tag">ACP</span><span class="tag">Classification hiérarchique</span>
+      <span class="tag">K-means</span><span class="tag">FAOSTAT</span>
+    </div>
+  </section>
+
+  <div class="shell m-grid">
+
+    <aside class="rail">
+      <p class="rail-t">Sommaire</p>
+      <ol>
+        <li><a href="#contexte">Contexte &amp; besoin métier</a></li>
+        <li><a href="#donnees">Données</a></li>
+        <li><a href="#demarche">Démarche</a></li>
+        <li><a href="#resultats">Résultats &amp; impact</a></li>
+        <li><a href="#limites">Limites &amp; pistes</a></li>
+      </ol>
+    </aside>
+
+    <article class="m-body">
+
+      <ul class="kpis">
+        <li><span class="kpi-v">103</span><span class="kpi-l">pays retenus, aucune valeur manquante</span></li>
+        <li><span class="kpi-v">5</span><span class="kpi-l">sources internationales fusionnées</span></li>
+        <li><span class="kpi-v">3</span><span class="kpi-l">marchés cibles en sortie d'analyse</span></li>
+      </ul>
+
+      <!-- 01 -->
+      <section class="sec" id="contexte">
+        <h2 class="sec-h"><span class="sec-n">01</span> Contexte &amp; besoin métier</h2>
+        <p class="lede">
+          Une entreprise souhaite se développer à l'international et cherche <strong>vers quels pays exporter en priorité</strong>.
+        </p>
+        <p>
+          Un bon marché d'export pour du poulet biologique doit réunir plusieurs conditions : un pouvoir d'achat suffisant, une culture de
+          consommation bio déjà installée, une dépendance aux importations de viande (un pays qui produit assez pour lui-même n'a aucune raison d'acheter) et une stabilité
+          politique compatible avec un engagement commercial durable.
+        </p>
+        <p>
+          Aucun de ces critères ne suffit seul, et ils vont parfois dans des sens opposés : un pays riche et stable peut aussi être un gros producteur, donc un concurrent. Il faut donc <strong>croiser une dizaine d'indicateurs à la fois</strong>, ce qu'un simple tri ne permet pas.
+        </p>
+      </section>
+
+      <!-- 02 -->
+      <section class="sec" id="donnees">
+        <h2 class="sec-h"><span class="sec-n">02</span> Données</h2>
+        <p>
+          Cinq sources publiques, fusionnées sur le couple pays / année :
+        </p>
+        <ul class="bullets">
+          <li><strong>FAOSTAT</strong> : population, bilans alimentaires (production, importations, exportations, disponibilité), superficie des terres agricoles, terres en agriculture biologique.</li>
+          <li><strong>Banque mondiale</strong> : PIB par habitant en parité de pouvoir d'achat, indice de stabilité politique exprimé en rang centile.</li>
+        </ul>
+
+        <h3>Qualité et limites</h3>
+        <ul class="bullets">
+          <li>Les sources ne couvrent ni les mêmes pays ni les mêmes années. La fusion réduit mécaniquement le périmètre.</li>
+          <li>Un filtre de complétude supérieure à 90 % a été appliqué, et l'analyse recentrée sur <strong>l'année 2023</strong>. Résultat : <strong>103 pays, zéro valeur manquante</strong>.</li>
+          <li><strong>Échelles incomparables</strong> : la population varie d'environ 117 milliers à plus de 1,45 milliard d'habitants, pour une moyenne de 61 millions et un écart-type de 203 millions. L'écart-type vaut plus de trois fois la moyenne.</li>
+          <li>Les 103 pays restants sont ceux qui publient des statistiques fiables. Les marchés les moins documentés sont donc absents de l'analyse, ce qui est une limite, mais cohérente avec un objectif d'export sécurisé.</li>
+        </ul>
+      </section>
+
+      <!-- 03 -->
+      <section class="sec" id="demarche">
+        <h2 class="sec-h"><span class="sec-n">03</span> Démarche</h2>
+
+        <ol class="steps">
+          <li>
+            <h3>Comparer les pays à taille égale</h3>
+            <p>
+              Les variables en valeur absolue ont été converties en ratios rapportés à la
+              population ou à la superficie.
+            </p>
+            <div class="why">
+              <p class="why-l">Pourquoi ce choix</p>
+              <p>
+                Une forte population aurait dominé toute l'analyse : la Chine et l'Inde se seraient détachées sur le seul
+                critère de leur taille. Raisonner par habitant remet les
+                103 pays sur une base comparable.
+              </p>
+            </div>
+          </li>
+
+          <li>
+            <h3>Construire trois indicateurs absents des sources</h3>
+            <p>
+              Aucune source ne fournissait directement les notions utiles à la décision. Trois
+              variables ont donc été calculées : la <strong>part des terres agricoles en
+              bio</strong>, pour avoir une idée de la maturité du marché biologique ; la <strong>balance
+              commerciale par habitant</strong>, exportations moins importations ; et la
+              <strong>dépendance aux importations</strong>, rapportant la production à la population.
+            </p>
+            <div class="why">
+              <p class="why-l">Pourquoi ce choix</p>
+              <p>
+                Ce sont ces trois variables qui portent la question métier. Sans elles,
+                l'analyse aurait décrit des économies agricoles en général, pas des débouchés
+                pour du poulet biologique en particulier.
+              </p>
+            </div>
+          </li>
+
+          <li>
+            <h3>Éliminer les redondances avant l'analyse factorielle</h3>
+            <p>
+              L'examen des corrélations a révélé des variables très liées : la balance
+              commerciale et les exportations atteignent 0,90. Les colonnes redondantes ont été
+              retirées avant de poursuivre.
+            </p>
+            <div class="why">
+              <p class="why-l">Pourquoi ce choix</p>
+              <p>
+                Deux variables quasi identiques comptent double dans une analyse factorielle :
+                elles tirent artificiellement les axes dans leur direction et surpondèrent une
+                dimension au détriment des autres. Les retirer évite que le résultat reflète la
+                structure du fichier plutôt que celle du marché.
+              </p>
+            </div>
+          </li>
+
+          <li>
+            <h3>Réduire la dimension par analyse en composantes principales</h3>
+            <p>
+              Les variables ont d'abord été mises à la même échelle, puis une analyse en composantes principales (ACP) a résumé les données en huit axes. Les quatre premiers expliquent <strong>27,2 %, 21,0 %, 16,8 % et 10,8 %</strong> de l'information totale.
+            </p>
+          </li>
+        </ol>
+
+        <figure class="fig">
+          <img src="../assets/img/missions/p11-acp-axes.png"
+               alt="Carte de chaleur des contributions des douze variables aux huit axes factoriels. La part de terres bio contribue à 0,63 sur l'axe F4 et la balance commerciale par habitant à 0,39 ; les importations pèsent 0,50 sur l'axe F3.">
+          <figcaption><span class="fig-n">Fig. 1</span>
+            Contribution de chaque variable aux axes factoriels. L'axe F4 est porté par la part
+            de terres bio (0,63) ; l'axe F3 par les importations (0,50) et la balance
+            commerciale (−0,43).
+          </figcaption>
+        </figure>
+
+        <div class="why">
+          <p class="why-l">Pourquoi analyser le plan F3-F4 et non F1-F2</p>
+          <p>
+            Le premier plan (F1-F2) explique davantage de variance (48,2 % contre 27,6 %), mais il décrit surtout la puissance agricole des pays.
+          </p>
+          <p>
+            Sur le cercle des corrélations, c'est le plan F3-F4 qui apporte le plus d'informations utiles : il oppose la <strong>dépendance aux importations</strong> et la <strong>maturité du marché bio</strong>, les deux critères qui comptent pour savoir si un pays achètera du poulet bio étranger.
+          </p>
+        </div>
+
+        <ol class="steps" start="5">
+          <li>
+            <h3>Classification hiérarchique, puis rejet de cette piste</h3>
+            <p>
+              Une classification ascendante hiérarchique a été construite selon la méthode de
+              Ward. Le dendrogramme, coupé à une distance de 12, donne <strong>trois
+              groupes</strong>.
+            </p>
+          </li>
+        </ol>
+
+        <figure class="fig">
+          <img src="../assets/img/missions/p11-dendrogramme.png"
+               alt="Dendrogramme de classification ascendante hiérarchique des 103 pays, avec une ligne de coupe horizontale rouge tracée à une distance de 12 qui délimite trois grands groupes.">
+          <figcaption><span class="fig-n">Fig. 2</span>
+            Dendrogramme (méthode de Ward). La coupe à 12 isole trois groupes très inégaux : un groupe de pays à faible revenu, un groupe de pays développés, et quelques
+            géants démographiques isolés à gauche.
+          </figcaption>
+        </figure>
+
+        <div class="why">
+          <p class="why-l">Pourquoi cette méthode a été écartée</p>
+          <p>
+            Trois groupes pour 103 pays produisent des ensembles trop hétérogènes pour être
+            actionnables : le groupe des « pays développés » réunissait aussi bien des
+            importateurs nets que de gros exportateurs concurrents. Mettre un client potentiel et son concurrent dans le même groupe ne permet pas de décider.
+          </p>
+          <p>
+            La classification hiérarchique a donc surtout servi à <strong>montrer qu'il fallait plus de groupes</strong>, avant de passer à une méthode qui permet d'en fixer le nombre.
+          </p>
+        </div>
+
+        <ol class="steps" start="6">
+          <li>
+            <h3>Partitionnement en huit groupes</h3>
+            <p>
+              Un K-means a été appliqué sur les coordonnées factorielles, avec
+              <strong>huit groupes</strong>. Chacun a ensuite été profilé sur les moyennes de
+              ses variables d'origine : PIB par habitant, engagement bio, stabilité politique,
+              balance commerciale, production.
+            </p>
+          </li>
+
+          <li>
+            <h3>Écarter des groupes selon la question commerciale</h3>
+            <p>
+              Les huit profils ont été confrontés un à un à la question commerciale :
+            </p>
+            <ul class="bullets">
+              <li><strong>Écartés pour concurrence.</strong> Les puissances agricoles exportatrices et autosuffisantes n'importent quasiment pas de volaille.</li>
+              <li><strong>Écartés pour risque.</strong> Les groupes cumulant instabilité politique, PIB par habitant faible ou marché bio immature.</li>
+              <li><strong>Non prioritaires.</strong> Deux groupes intéressants mais pénalisés par une stabilité moyenne ou une population trop faible pour justifier une logistique d'export.</li>
+              <li><strong>Finalistes.</strong> Deux groupes restants, tous deux riches, stables et sensibles au bio.</li>
+            </ul>
+            <div class="why">
+              <p class="why-l">L'arbitrage final</p>
+              <p>
+                Les deux finalistes se départagent sur un seul critère : le sens de leur balance
+                commerciale. Le premier <strong>exporte plus qu'il n'importe</strong> : ce serait donc un concurrent plutôt qu'un client. Le second <strong>importe davantage</strong> tout en
+                affichant une part de terres bio notable : il a le besoin et la culture de
+                consommation. C'est lui qui a été retenu.
+              </p>
+            </div>
+          </li>
+        </ol>
+      </section>
+
+      <!-- 04 -->
+      <section class="sec" id="resultats">
+        <h2 class="sec-h"><span class="sec-n">04</span> Résultats &amp; impact</h2>
+
+        <figure class="fig">
+          <img src="../assets/img/missions/p11-clusters.png"
+               alt="Projection des 103 pays sur le plan factoriel F3-F4, chaque pays coloré selon son groupe. La Suisse et le Luxembourg apparaissent dans la partie haute et droite du graphique, l'Irlande à proximité.">
+          <figcaption><span class="fig-n">Fig. 3</span>
+            Les 103 pays projetés sur le plan F3-F4, colorés par groupe. Vers le haut à droite (forte dépendance aux importations et engagement bio élevé) se détachent la Suisse,
+            le Luxembourg et l'Irlande.
+          </figcaption>
+        </figure>
+
+        <p class="lede">
+          Trois marchés prioritaires ressortent de l'analyse : <strong>la Suisse, le Luxembourg
+          et l'Irlande</strong>.
+        </p>
+        <p>
+          Ces trois pays partagent le même profil : PIB par habitant élevé, forte stabilité
+          politique, part significative de terres en agriculture biologique, et balance
+          commerciale agroalimentaire qui les place du côté des acheteurs. Ils ont le pouvoir
+          d'achat, l'appétence pour le bio et le besoin d'importer.
+        </p>
+
+        <h3>Recommandations</h3>
+        <ul class="bullets">
+          <li><strong>Prospecter d'abord la Suisse et le Luxembourg</strong> : marchés à fort pouvoir d'achat et proches, ce qui réduit le coût du transport et son empreinte carbone, un argument cohérent pour un produit bio.</li>
+          <li><strong>Traiter l'Irlande séparément.</strong> Le pays est également un producteur agricole : le positionnement doit viser un segment premium plutôt qu'une concurrence frontale sur le volume.</li>
+          <li><strong>Ne pas rouvrir les groupes écartés pour concurrence.</strong> L'analyse montre que ces pays produisent assez pour ne pas avoir besoin d'importer, de façon durable.</li>
+          <li><strong>Mettre à jour chaque année.</strong> Les sources sont publiques et le traitement est automatisé dans le notebook : la mise à jour demande peu de travail.</li>
+        </ul>
+      </section>
+
+      <!-- 05 -->
+      <section class="sec" id="limites">
+        <h2 class="sec-h"><span class="sec-n">05</span> Limites &amp; prochaines pistes</h2>
+        <p>
+          <strong>L'analyse porte sur une seule année.</strong> Un pays en forte progression sur
+          le bio et un pays stable apparaissent identiques en 2023, alors que l'évolution compte beaucoup pour choisir un marché.
+        </p>
+        <p>
+          <strong>Aucune donnée propre à la volaille biologique.</strong> Les bilans alimentaires
+          de la FAO ne descendent pas à ce niveau de détail. La maturité du marché bio est
+          approchée par la part de terres cultivées en bio, ce qui reste un indicateur indirect :
+          un pays peut cultiver peu en bio et en consommer beaucoup, précisément parce qu'il importe.
+        </p>
+        <p>
+          <strong>Le nombre de groupes reste un choix.</strong> Huit groupes se sont révélés
+          exploitables, mais cette valeur n'a pas été confirmée par une méthode statistique : elle vient du constat que trois groupes ne suffisaient pas.
+        </p>
+
+        <h3>Prochaines pistes</h3>
+        <ul class="bullets">
+          <li>Étendre l'analyse sur cinq à dix ans pour distinguer marchés installés et marchés en croissance.</li>
+          <li>Stabiliser le nombre de groupes par une méthode formelle (score de silhouette ou critère du coude) plutôt que par appréciation.</li>
+          <li>Compléter par des données douanières spécifiques à la viande de volaille bio, absentes des sources publiques utilisées.</li>
+          <li>Confronter les trois pays retenus aux contraintes réglementaires d'exportation, hors périmètre de cette analyse.</li>
+        </ul>
+      </section>
+
+    </article>
+  </div>
+
+  <nav class="shell m-nav" aria-label="Navigation entre les missions">
+    <a href="p12-faux-billets.html"><span>← Mission précédente</span><strong>Détection de faux billets</strong></a>
+    <a class="nx" href="p10-eau-potable.html"><span>Mission suivante →</span><strong>Accès à l'eau potable</strong></a>
+  </nav>
+
+</main>
+
+<footer class="site-foot shell">
+  <span>Suzanne Dong · Data Analyst · <a href="mailto:dong.suzanne@hotmail.com">dong.suzanne@hotmail.com</a></span>
+  <span><a href="../index.html">Accueil</a> · <a href="#main">Haut de page</a></span>
+</footer>
+
+<script src="../assets/js/main.js"></script>
+</body>
+</html>

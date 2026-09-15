@@ -1,0 +1,303 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>try{var t=localStorage.getItem('theme');if(t==='light'||t==='dark')document.documentElement.dataset.theme=t}catch(e){}</script>
+<title>Base immobilière DATAImmo · Suzanne Dong</title>
+<meta name="description" content="Conception d'une base de données immobilière sous SQLite : dictionnaire de données, schéma relationnel, cadrage RGPD et douze requêtes métier.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..700&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+<a class="skip" href="#main">Aller au contenu</a>
+
+<header class="site-head">
+  <div class="shell head-in">
+    <a class="brand" href="../index.html">Suzanne Dong <span>Data Analyst</span></a>
+    <nav class="site-nav" aria-label="Navigation principale">
+      <!-- <a href="../index.html#phares">Missions phares</a> -->
+      <a href="../index.html#competences">Compétences</a>
+      <a href="../index.html#missions">Projets</a>
+      <a href="../veille.html">Veille</a>
+      <a href="../index.html#contact">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+  <section class="m-hero shell">
+    <p class="eyebrow">Mission P05 · Modélisation de données</p>
+    <h1>Structurer une base avant de l'interroger</h1>
+    <div class="m-meta">
+      <span><b>Février 2025</b></span>
+      <span>Projet : <b>DATAImmo</b>, prévision des prix de vente</span>
+      <span>Secteur : <b>Immobilier</b></span>
+    </div>
+    <div class="tags">
+      <span class="tag">SQL</span><span class="tag">SQLite</span>
+      <span class="tag">Dictionnaire de données</span><span class="tag">RGPD</span>
+      <span class="tag">Modélisation</span>
+    </div>
+  </section>
+
+  <div class="shell m-grid">
+
+    <aside class="rail">
+      <p class="rail-t">Sommaire</p>
+      <ol>
+        <li><a href="#contexte">Contexte &amp; besoin métier</a></li>
+        <li><a href="#donnees">Données</a></li>
+        <li><a href="#demarche">Démarche</a></li>
+        <li><a href="#resultats">Résultats &amp; impact</a></li>
+        <li><a href="#limites">Limites &amp; pistes</a></li>
+      </ol>
+    </aside>
+
+    <article class="m-body">
+
+      <ul class="kpis">
+        <li><span class="kpi-v">108 076</span><span class="kpi-l">lignes chargées sur 3 tables</span></li>
+        <li><span class="kpi-v">12</span><span class="kpi-l">requêtes métier livrées</span></li>
+        <li><span class="kpi-v">7</span><span class="kpi-l">attributs documentés par champ</span></li>
+      </ul>
+
+      <!-- 01 -->
+      <section class="sec" id="contexte">
+        <h2 class="sec-h"><span class="sec-n">01</span> Contexte &amp; besoin métier</h2>
+        <p class="lede">
+          Le projet DATAImmo vise à améliorer la prévision des prix de vente de biens
+          immobiliers. Avant de faire des prévisions, il fallait d'abord une base de données exploitable.
+        </p>
+        <p>
+          Les données existaient sous forme de fichiers plats hétérogènes : transactions
+          foncières, caractéristiques des communes, référentiel géographique. Sans structure
+          commune, chaque question métier exigeait un retraitement manuel, et deux personnes
+          posant la même question obtenaient deux réponses différentes.
+        </p>
+        <p>
+          Il fallait donc construire <strong>une base documentée, bien structurée et conforme au RGPD</strong>, sur laquelle un futur modèle de prévision pourra s'appuyer.
+        </p>
+      </section>
+
+      <!-- 02 -->
+      <section class="sec" id="donnees">
+        <h2 class="sec-h"><span class="sec-n">02</span> Données</h2>
+        <div class="dtable">
+          <table>
+            <caption>Tables constituées</caption>
+            <thead>
+              <tr><th scope="col">Table</th><th scope="col">Contenu</th><th scope="col" class="num">Lignes chargées</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Valeurs foncières</td><td>Transactions immobilières : prix, surface, type de bien, date</td><td class="num">34 169</td></tr>
+              <tr><td>Données communes</td><td>Population municipale, comptée à part, totale</td><td class="num">34 991</td></tr>
+              <tr><td>Référentiel géographique</td><td>Codes commune, département, région, canton</td><td class="num">38 916</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>Qualité et limites</h3>
+        <ul class="bullets">
+          <li><strong>Les trois tables ne décrivent pas la même chose.</strong> L'une liste des ventes, les autres des communes : il fallait définir comment les relier avant de charger les données.</li>
+          <li><strong>Codes géographiques différents</strong> d'une source à l'autre, d'où la nécessité d'un référentiel commun.</li>
+          <li><strong>Données à caractère personnel</strong> présentes dans les transactions foncières brutes.</li>
+          <li><strong>Périmètre temporel restreint</strong> : le premier semestre 2020, marqué par des épisodes de confinement, ce qui affecte la représentativité des volumes de vente.</li>
+        </ul>
+      </section>
+
+      <!-- 03 -->
+      <section class="sec" id="demarche">
+        <h2 class="sec-h"><span class="sec-n">03</span> Démarche</h2>
+
+        <ol class="steps">
+          <li>
+            <h3>Cadrer la conformité avant de charger</h3>
+            <p>
+              La stratégie RGPD a été définie en amont : suppression des données à caractère
+              personnel, durée de conservation explicite, stratégie de sauvegarde documentée.
+            </p>
+            <div class="why">
+              <p class="why-l">Pourquoi ce choix</p>
+              <p>
+                Une fois des données personnelles chargées, elles se propagent dans les
+                sauvegardes, les exports et les copies de travail. Il est donc bien plus simple de les écarter <strong>dès la conception</strong> que de reprendre toute la base ensuite.
+              </p>
+            </div>
+          </li>
+
+          <li>
+            <h3>Rédiger le dictionnaire de données</h3>
+            <p>
+              Chaque champ a été documenté selon sept attributs : code, signification, type,
+              longueur, nature (élémentaire, calculée ou concaténée), règle de gestion et règle
+              de calcul. Un lexique complète l'ensemble.
+            </p>
+            <div class="why">
+              <p class="why-l">Pourquoi ce choix</p>
+              <p>
+                Le dictionnaire <strong>fixe les définitions avant d'écrire la première requête</strong>. Il règle dès le départ les questions qui posent problème ensuite : la surface est-elle habitable ou au sol, le prix
+                inclut-il les frais, une commune fusionnée compte-t-elle pour une ou deux ?
+              </p>
+              <p>
+                Distinguer explicitement les champs élémentaires des champs calculés évite aussi
+                qu'un indicateur dérivé soit un jour recalculé différemment par quelqu'un d'autre, et que deux chiffres officiels se contredisent.
+              </p>
+            </div>
+          </li>
+
+          <li>
+            <h3>Concevoir le schéma relationnel normalisé</h3>
+            <p>
+              Clés primaires, clés étrangères et cardinalités définies avant toute création de
+              table.
+            </p>
+            <div class="why">
+              <p class="why-l">Pourquoi la normalisation</p>
+              <p>
+                Le référentiel géographique est isolé plutôt que dupliqué dans chaque table :
+                le nom d'une commune n'est stocké qu'une fois. Une correction se propage
+                partout, et aucune incohérence entre deux orthographes du même lieu ne peut s'installer. Ce problème est classique et coûteux sur les données géographiques
+                françaises.
+              </p>
+            </div>
+          </li>
+
+          <li>
+            <h3>Créer et charger la base</h3>
+            <p>
+              Génération du script de création des tables, puis chargement des trois jeux sous
+              SQLite avec vérification des volumes à chaque import.
+            </p>
+          </li>
+        </ol>
+
+        <figure class="fig fig--large">
+          <img src="../assets/img/missions/p05-import-sqlite.png"
+               alt="Capture de SQLiteStudio montrant la base DATAImmo avec ses trois tables Donnees_communes, Referentiel_geographique et Valeurs_foncieres, les données de la table des communes affichées, et la barre d'état confirmant l'import de 34 991, 38 916 et 34 169 lignes.">
+          <figcaption><span class="fig-n">Fig. 1</span>
+            La base chargée. La barre d'état confirme les volumes importés table par table : <strong>34 991, 38 916 et 34 169 lignes</strong>. Vérifier les volumes après chaque import permet de repérer tout de suite un chargement incomplet.
+          </figcaption>
+        </figure>
+
+        <ol class="steps" start="5">
+          <li>
+            <h3>Écrire douze requêtes répondant à des questions métier</h3>
+            <p>
+              Jointures entre les trois tables, filtres temporels par trimestre, agrégations et
+              classements régionaux ou départementaux.
+            </p>
+            <div class="why">
+              <p class="why-l">Pourquoi partir des questions</p>
+              <p>
+                Chaque requête répond à une question posée par le métier. C'est aussi un test du modèle : si une question simple demande une requête compliquée, le schéma est à revoir.
+              </p>
+            </div>
+          </li>
+        </ol>
+
+        <h3>Consulter le livrable</h3>
+        <div class="docs docs--single">
+          <a class="doc" href="../assets/docs/p05-selection-requetes-sql.pdf" target="_blank" rel="noopener"
+             aria-label="Sélection de requêtes SQL, PDF de 7 pages (nouvel onglet)">
+            <span class="doc-thumb"><img src="../assets/img/missions/p05-apercu-requetes-sql.png" alt="" loading="lazy"></span>
+            <span class="doc-body">
+              <span class="doc-k">PDF · 7 pages</span>
+              <span class="doc-t">Sélection de requêtes SQL</span>
+              <span class="doc-d">Six des douze requêtes, de la jointure à la fonction de fenêtre. Pour chacune : la question métier, la technique retenue et pourquoi, le code, le résultat et sa lecture.</span>
+              <span class="doc-cta">Ouvrir dans un nouvel onglet ↗</span>
+            </span>
+          </a>
+        </div>
+      </section>
+
+      <!-- 04 -->
+      <section class="sec" id="resultats">
+        <h2 class="sec-h"><span class="sec-n">04</span> Résultats &amp; impact</h2>
+        <p class="lede">
+          Une base documentée, normalisée et conforme, accompagnée de douze requêtes couvrant
+          les questions récurrentes de l'équipe.
+        </p>
+
+        <h3>Questions désormais outillées</h3>
+        <ul class="bullets">
+          <li>Nombre de ventes d'appartements par région sur le premier semestre 2020.</li>
+          <li>Classement des dix départements aux prix au mètre carré les plus élevés.</li>
+          <li>Prix moyen au mètre carré en Île-de-France.</li>
+          <li>Taux d'évolution des ventes entre le premier et le deuxième trimestre 2020.</li>
+          <li>Classement des régions selon le prix au mètre carré des grands appartements.</li>
+        </ul>
+
+        <figure class="fig fig--large">
+          <img src="../assets/img/missions/p05-schema-relationnel.png"
+               alt="Schéma relationnel normalisé de DATAImmo : la table Valeurs_foncieres au centre, reliée par la clé ID_COM au Referentiel_geographique et aux Donnees_communes.">
+          <figcaption><span class="fig-n">Fig. 2</span>
+            Le modèle de données de DATAImmo. Les ventes sont reliées au référentiel
+            géographique et aux données communales par un identifiant unique,
+            <strong>ID_COM</strong> : le nom d'une commune et sa population ne sont stockés
+            qu'une seule fois.
+          </figcaption>
+        </figure>
+
+        <h3>Ce que le livrable change</h3>
+        <ul class="bullets">
+          <li><strong>Une même question donne toujours le même chiffre.</strong> Le dictionnaire fixe une définition unique pour chaque indicateur.</li>
+          <li><strong>La conformité RGPD est prise en compte dès la conception.</strong></li>
+          <li><strong>La base est prête pour la modélisation prédictive</strong>, objectif initial du projet DATAImmo.</li>
+        </ul>
+
+        <h3>Recommandations</h3>
+        <ul class="bullets">
+          <li><strong>Tenir le dictionnaire à jour</strong> à chaque évolution de la base, sinon il devient trompeur.</li>
+          <li><strong>Élargir le périmètre temporel avant toute prédiction.</strong>
+          <li><strong>Envisager une couche de restitution</strong> pour rendre ces requêtes accessibles sans SQL.</li>
+        </ul>
+      </section>
+
+      <!-- 05 -->
+      <section class="sec" id="limites">
+        <h2 class="sec-h"><span class="sec-n">05</span> Limites &amp; prochaines pistes</h2>
+        <p>
+          <strong>Le premier semestre 2020 n'est pas une période de référence.</strong> Les volumes de
+          transactions ont été fortement perturbés. Toute tendance calculée sur cette seule
+          période est à manier avec prudence.
+        </p>
+        <p>
+          <strong>Le cadrage RGPD reste à formaliser pour une mise en production.</strong>
+          Les principes sont posés, mais un usage réel exigerait registre de traitement,
+          désignation des responsabilités et procédure d'exercice des droits.
+        </p>
+        <p>
+          <strong>SQLite convient à l'étude, pas à l'exploitation partagée.</strong>
+        </p>
+
+        <h3>Prochaines pistes</h3>
+        <ul class="bullets">
+          <li>Étendre la base sur plusieurs années pour permettre une modélisation prédictive robuste.</li>
+          <li>Migrer vers un moteur serveur si la base doit être partagée entre plusieurs utilisateurs.</li>
+          <li>Compléter le cadrage RGPD par un registre de traitement en vue d'une exploitation réelle.</li>
+          <li>Enrichir de variables explicatives du prix absentes des sources actuelles : transports, équipements, tension locative.</li>
+        </ul>
+      </section>
+
+    </article>
+  </div>
+
+  <nav class="shell m-nav" aria-label="Navigation entre les missions">
+    <a href="p06-bottleneck.html"><span>← Mission précédente</span><strong>Performance produit BottleNeck</strong></a>
+    <a class="nx" href="p04-sous-nutrition.html"><span>Mission suivante →</span><strong>Sous-nutrition dans le monde</strong></a>
+  </nav>
+
+</main>
+
+<footer class="site-foot shell">
+  <span>Suzanne Dong · Data Analyst · <a href="mailto:dong.suzanne@hotmail.com">dong.suzanne@hotmail.com</a></span>
+  <span><a href="../index.html">Accueil</a> · <a href="#main">Haut de page</a></span>
+</footer>
+
+<script src="../assets/js/main.js"></script>
+</body>
+</html>

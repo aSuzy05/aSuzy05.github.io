@@ -1,0 +1,274 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>try{var t=localStorage.getItem('theme');if(t==='light'||t==='dark')document.documentElement.dataset.theme=t}catch(e){}</script>
+<title>Index d'égalité femmes-hommes · Suzanne Dong</title>
+<meta name="description" content="Automatisation sous KNIME du diagnostic d'égalité professionnelle femmes-hommes, sur neuf domaines réglementaires et dans le respect du RGPD.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..700&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+<a class="skip" href="#main">Aller au contenu</a>
+
+<header class="site-head">
+  <div class="shell head-in">
+    <a class="brand" href="../index.html">Suzanne Dong <span>Data Analyst</span></a>
+    <nav class="site-nav" aria-label="Navigation principale">
+      <!-- <a href="../index.html#phares">Missions phares</a> -->
+      <a href="../index.html#competences">Compétences</a>
+      <a href="../index.html#missions">Projets</a>
+      <a href="../veille.html">Veille</a>
+      <a href="../index.html#contact">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+  <section class="m-hero shell">
+    <p class="eyebrow">Mission P08 · Automatisation &amp; conformité</p>
+    <h1>Automatiser le diagnostic d'égalité professionnelle</h1>
+    <div class="m-meta">
+      <span><b>Août 2025</b></span>
+      <span>Périmètre : <b>256 salariés</b>, 6 services</span>
+      <span>Secteur : <b>Ressources humaines</b></span>
+    </div>
+    <div class="tags">
+      <span class="tag">KNIME</span><span class="tag">Workflow</span>
+      <span class="tag">RGPD</span><span class="tag">Index Égalité</span>
+    </div>
+  </section>
+
+  <div class="shell m-grid">
+
+    <aside class="rail">
+      <p class="rail-t">Sommaire</p>
+      <ol>
+        <li><a href="#contexte">Contexte &amp; besoin métier</a></li>
+        <li><a href="#donnees">Données</a></li>
+        <li><a href="#demarche">Démarche</a></li>
+        <li><a href="#resultats">Résultats &amp; impact</a></li>
+        <li><a href="#limites">Limites &amp; pistes</a></li>
+      </ol>
+    </aside>
+
+    <article class="m-body">
+
+      <ul class="kpis">
+        <li><span class="kpi-v">86<span style="font-size:.5em">/100</span></span><span class="kpi-l">index obtenu, pour un seuil légal à 75</span></li>
+        <li><span class="kpi-v">9</span><span class="kpi-l">domaines réglementaires couverts</span></li>
+        <li><span class="kpi-v">0</span><span class="kpi-l">donnée personnelle conservée</span></li>
+      </ul>
+
+      <!-- 01 -->
+      <section class="sec" id="contexte">
+        <h2 class="sec-h"><span class="sec-n">01</span> Contexte &amp; besoin métier</h2>
+        <p class="lede">
+          Le diagnostic d'égalité professionnelle entre les femmes et les hommes est une
+          obligation légale annuelle. Il est souvent produit à la main, sous tableur, par l'équipe RH, ce qui prend du temps et expose aux erreurs.
+        </p>
+        <p>
+          Le besoin était double. D'abord <strong>fiabiliser le calcul</strong> : sur neuf domaines réglementaires, une erreur peut remettre en cause la conformité. Ensuite <strong>rendre le diagnostic reproductible</strong> : s'il est refait de zéro chaque année, il est difficile de mesurer une progression.
+        </p>
+        <p>
+          Contrainte forte : les données mobilisées sont parmi les plus
+          sensibles de l'entreprise (rémunérations, promotions, congés maternité, état civil).
+          Le traitement devait être conforme au RGPD.
+        </p>
+      </section>
+
+      <!-- 02 -->
+      <section class="sec" id="donnees">
+        <h2 class="sec-h"><span class="sec-n">02</span> Données</h2>
+        <p>
+          Extractions du système d'information RH couvrant les neuf domaines d'action de
+          l'égalité professionnelle : informations professionnelles, rémunération, embauche,
+          formation, promotion, qualification, classification, conditions de travail, santé et
+          sécurité. Les fichiers sont reliés entre eux par un identifiant salarié.
+        </p>
+
+        <h3>Qualité et limites</h3>
+        <ul class="bullets">
+          <li><strong>Effectif modeste</strong> : 256 salariés répartis sur six services. Sur les plus petits services, les effectifs par sexe deviennent trop faibles pour qu'un écart soit interprétable.</li>
+          <li><strong>Données très sensibles</strong> : salaire de base, part variable, augmentations, promotions, congés maternité, situation familiale.</li>
+          <li><strong>Pas d'historique permettant de visualiser une tendance.</li>
+        </ul>
+
+        <div class="why">
+          <p class="why-l">Traitement RGPD</p>
+          <p>
+            Les données à caractère personnel ont été <strong>supprimées dès la collecte</strong>, avant toute analyse.
+            Seul l'identifiant technique permettant de joindre les fichiers a été conservé.
+        </div>
+      </section>
+
+      <!-- 03 -->
+      <section class="sec" id="demarche">
+        <h2 class="sec-h"><span class="sec-n">03</span> Démarche</h2>
+
+        <ol class="steps">
+          <li>
+            <h3>Construire un workflow</h3>
+            <p>
+              L'ensemble du traitement a été assemblé sous KNIME : jointures sur l'identifiant
+              salarié, agrégations par service et par sexe, calculs d'écarts de dates pour
+              l'ancienneté, filtres et contrôles de cohérence.
+            </p>
+            <div class="why">
+              <p class="why-l">Pourquoi KNIME</p>
+              <p>
+                Un workflow visuel se lit comme un schéma : chaque étape est un bloc nommé,
+                l'enchaînement est explicite, et une modification se fait sans écrire de code.
+                Une <strong>équipe RH peut donc le reprendre facilement</strong>.
+              </p>
+            </div>
+          </li>
+
+          <li>
+            <h3>Poser les indicateurs de référence dès le départ</h3>
+            <p>
+              La répartition femmes / hommes par service, par tranche d'âge et par ancienneté a
+              été calculée avant toute analyse d'écart.
+            </p>
+            <div class="why">
+              <p class="why-l">Pourquoi ce choix</p>
+              <p>
+                Un écart de rémunération ne s'interprète qu'entre des postes comparables. Constater que
+                les femmes gagnent moins en moyenne ne dit rien tant qu'on ignore si elles sont
+                réparties différemment entre les services et les niveaux de qualification.
+              </p>
+            </div>
+          </li>
+
+          <li>
+            <h3>Contrôler la cohérence avant de calculer</h3>
+            <p>
+              Une vue statistique a été insérée dans le workflow pour détecter valeurs
+              aberrantes et incohérences (dates impossibles, montants hors plage, modalités inattendues) avant que ces anomalies ne se propagent dans le score final.
+            </p>
+          </li>
+
+          <li>
+            <h3>Générer automatiquement graphiques et score</h3>
+            <p>
+              Le workflow produit les visualisations par domaine (embauche, promotion, qualification, conditions de travail, rémunération effective), puis calcule
+              l'index sur 100.
+            </p>
+            <div class="why">
+              <p class="why-l">Pourquoi ce choix</p>
+              <p>
+                Les graphiques sont produits par le workflow lui-même. L'an prochain, il suffira de mettre à jour les fichiers sources pour <strong>refaire tout le diagnostic</strong> et le comparer à celui de cette année.
+              </p>
+            </div>
+          </li>
+        </ol>
+
+        <figure class="fig fig--todo">
+          <div class="todo-box">
+            <p class="todo-t">Image à insérer</p>
+            <p class="todo-d">
+              Capture du <strong>workflow KNIME</strong> montrant l'enchaînement des nœuds.
+              Ouvrir <code>Dong_Suzanne_1_workflow_KNIME_082025.knwf</code> dans KNIME
+              Analytics Platform et capturer le canevas.
+            </p>
+            <p class="todo-f">assets/img/missions/p08-workflow-knime.png · 1600 × 900 px</p>
+          </div>
+          <figcaption><span class="fig-n">Fig. 1</span>
+            Le workflow complet, qui permet de rejouer le traitement à l'identique.
+          </figcaption>
+        </figure>
+      </section>
+
+      <!-- 04 -->
+      <section class="sec" id="resultats">
+        <h2 class="sec-h"><span class="sec-n">04</span> Résultats &amp; impact</h2>
+        <p class="lede">
+          Index d'égalité professionnelle : <strong>86 sur 100</strong>, pour un seuil de
+          conformité fixé à 75. L'entreprise est conforme, mais le score global masque deux
+          déséquilibres identifiés.
+        </p>
+
+        <figure class="fig fig--large">
+          <img src="../assets/img/missions/p08-effectifs-service.png"
+               alt="Diagramme en anneaux imbriqués montrant la répartition des 256 salariés par service, chaque service étant subdivisé en part de femmes et part d'hommes. Le service Consultant représente 27 % de l'effectif, le Commercial 20 %, les RH 17 %, la Comptabilité-Finances 16 %, le Marketing 14 % et l'Informatique 6 %.">
+          <figcaption><span class="fig-n">Fig. 2</span>
+            Répartition des effectifs par service et par sexe. Le déséquilibre est net sur
+            l'Informatique, où les femmes représentent 3 personnes sur 15, et sur le service
+            Consultant, le plus important de l'entreprise.
+          </figcaption>
+        </figure>
+
+        <figure class="fig">
+          <img src="../assets/img/missions/p08-anciennete.png"
+               alt="Diagramme en barres comparant l'ancienneté moyenne : 12,11 ans pour les femmes contre 14,16 ans pour les hommes.">
+          <figcaption><span class="fig-n">Fig. 3</span>
+            Ancienneté moyenne : <strong>12,11 ans pour les femmes contre 14,16 pour les
+            hommes</strong>, soit deux années d'écart. Un élément de contexte indispensable
+            pour interpréter les écarts de rémunération, l'ancienneté étant l'un de leurs
+            déterminants légitimes.
+          </figcaption>
+        </figure>
+
+        <h3>Constats</h3>
+        <ul class="bullets">
+          <li><strong>Sous-représentation des femmes dans les niveaux de qualification élevés</strong>, particulièrement visible sur les fonctions techniques.</li>
+          <li><strong>Écarts de rémunération sur le haut de la distribution</strong> : parmi les dix salaires les plus élevés, les femmes sont minoritaires.</li>
+          <li><strong>Deux ans d'écart d'ancienneté moyenne</strong>, qui explique une partie seulement des écarts observés.</li>
+        </ul>
+
+        <h3>Recommandations</h3>
+        <ul class="bullets">
+          <li><strong>Programme de formation au leadership</strong> ciblé sur les femmes déjà en poste, pour agir sur le vivier de promotion interne.</li>
+          <li><strong>Des grilles salariales fondées sur des critères de performance clairs</strong>, pour limiter les décisions arbitraires.</li>
+          <li><strong>Actions de sensibilisation</strong> auprès des managers qui décident des augmentations et des promotions.</li>
+          <li><strong>Refaire le diagnostic chaque année avec le même workflow</strong>, pour mesurer les progrès d'une année sur l'autre.</li>
+        </ul>
+      </section>
+
+      <!-- 05 -->
+      <section class="sec" id="limites">
+        <h2 class="sec-h"><span class="sec-n">05</span> Limites &amp; prochaines pistes</h2>
+        <p>
+          <strong>Un bon score ne règle pas tout.</strong> 86 sur 100 dépasse
+          largement le seuil légal, ce qui peut inviter à considérer le sujet comme traité. Les
+          déséquilibres de qualification identifiés subsistent pourtant.
+        </p>
+        <p>
+          <strong>L'analyse porte sur une seule année.</strong> Sans historique, impossible de
+          distinguer une situation qui s'améliore d'une situation qui se dégrade.
+        </p>
+        <p>
+          <strong>Les petits effectifs limitent la lecture.</strong> Avec 15 personnes en
+          Informatique, un écart peut tenir à une seule embauche et ne traduire aucune tendance.
+        </p>
+
+        <h3>Prochaines pistes</h3>
+        <ul class="bullets">
+          <li>Constituer un historique sur plusieurs années pour suivre l'évolution.</li>
+          <li>Isoler l'effet de l'ancienneté dans les écarts de rémunération, pour distinguer ce qui vient de l'ancienneté et ce qui vient d'une différence de traitement.</li>
+          <li>Former une personne de l'équipe RH à la modification du workflow, pour garantir son autonomie lors du prochain changement réglementaire.</li>
+        </ul>
+      </section>
+
+    </article>
+  </div>
+
+  <nav class="shell m-nav" aria-label="Navigation entre les missions">
+    <a href="p09-librairie-lapage.html"><span>← Mission précédente</span><strong>Comportement d'achat en librairie</strong></a>
+    <a class="nx" href="p07-suivi-projets.html"><span>Mission suivante →</span><strong>Suivi de projets internationaux</strong></a>
+  </nav>
+
+</main>
+
+<footer class="site-foot shell">
+  <span>Suzanne Dong · Data Analyst · <a href="mailto:dong.suzanne@hotmail.com">dong.suzanne@hotmail.com</a></span>
+  <span><a href="../index.html">Accueil</a> · <a href="#main">Haut de page</a></span>
+</footer>
+
+<script src="../assets/js/main.js"></script>
+</body>
+</html>

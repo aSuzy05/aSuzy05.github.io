@@ -1,0 +1,348 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>try{var t=localStorage.getItem('theme');if(t==='light'||t==='dark')document.documentElement.dataset.theme=t}catch(e){}</script>
+<title>Comportement d'achat en librairie · Suzanne Dong</title>
+<meta name="description" content="Analyse statistique de deux ans de transactions d'une librairie en ligne : tests d'hypothèses, segmentation client et concentration du chiffre d'affaires.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..700&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+<a class="skip" href="#main">Aller au contenu</a>
+
+<header class="site-head">
+  <div class="shell head-in">
+    <a class="brand" href="../index.html">Suzanne Dong <span>Data Analyst</span></a>
+    <nav class="site-nav" aria-label="Navigation principale">
+      <!-- <a href="../index.html#phares">Missions phares</a> -->
+      <a href="../index.html#competences">Compétences</a>
+      <a href="../index.html#missions">Projets</a>
+      <a href="../veille.html">Veille</a>
+      <a href="../index.html#contact">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+  <section class="m-hero shell">
+    <p class="eyebrow">Mission P09 · Statistiques inférentielles</p>
+    <h1>Comprendre qui achète, et comment</h1>
+    <div class="m-meta">
+      <span><b>Novembre 2025</b></span>
+      <span>Client : <b>Lapage</b>, librairie en ligne</span>
+      <span>Période analysée : <b>mars 2021 à février 2023</b></span>
+    </div>
+    <div class="tags">
+      <span class="tag">Python</span><span class="tag">pandas</span>
+      <span class="tag">SciPy</span><span class="tag">Tests d'hypothèses</span>
+      <span class="tag">seaborn</span>
+    </div>
+  </section>
+
+  <div class="shell m-grid">
+
+    <aside class="rail">
+      <p class="rail-t">Sommaire</p>
+      <ol>
+        <li><a href="#contexte">Contexte &amp; besoin métier</a></li>
+        <li><a href="#donnees">Données</a></li>
+        <li><a href="#demarche">Démarche</a></li>
+        <li><a href="#resultats">Résultats &amp; impact</a></li>
+        <li><a href="#limites">Limites &amp; pistes</a></li>
+      </ol>
+    </aside>
+
+    <article class="m-body">
+
+      <ul class="kpis">
+        <li><span class="kpi-v">8 621</span><span class="kpi-l">clients analysés sur 24 mois</span></li>
+        <li><span class="kpi-v">7,35 %</span><span class="kpi-l">du CA porté par 4 clients</span></li>
+        <li><span class="kpi-v">0,44</span><span class="kpi-l">indice de Gini sur les achats</span></li>
+      </ul>
+
+      <!-- 01 -->
+      <section class="sec" id="contexte">
+        <h2 class="sec-h"><span class="sec-n">01</span> Contexte &amp; besoin métier</h2>
+        <p class="lede">
+          Une librairie en ligne dispose de deux ans d'historique de ventes et veut orienter ses
+          choix stratégiques : quels stocks constituer, quelles offres personnaliser, comment
+          faire progresser le panier moyen.
+        </p>
+        <p>
+          Pour y répondre, il faut d'abord savoir <strong>si les clients ont des profils différents</strong>. Si le genre ou l'âge influencent vraiment les achats, personnaliser les offres a du sens ; sinon, c'est un investissement inutile.
+        </p>
+        <p>
+          Le commanditaire attendait des réponses claires, par exemple « les femmes achètent plus de telle catégorie ». Il fallait donc donner ces réponses <strong>en précisant leur fiabilité</strong> : un lien peut être statistiquement sûr mais trop faible pour peser sur les ventes.
+        </p>
+      </section>
+
+      <!-- 02 -->
+      <section class="sec" id="donnees">
+        <h2 class="sec-h"><span class="sec-n">02</span> Données</h2>
+        <p>
+          Trois fichiers : clients, produits et transactions, couvrant la période du
+          <strong>1<sup>er</sup> mars 2021 au 28 février 2023</strong>. Après consolidation :
+          8 621 clients, répartis à 52,1 % de femmes et 47,9 % d'hommes.
+        </p>
+
+        <h3>Traitement de conformité</h3>
+        <p>
+          Le fichier clients contenait l'année de naissance. Elle a été convertie en âge, puis
+          <strong>la date de naissance a été supprimée du jeu de travail</strong>. L'analyse
+          porte sur des tranches d'âge, non sur des individus identifiables.
+        </p>
+
+        <h3>Qualité et limites</h3>
+        <ul class="bullets">
+          <li><strong>21 clients sans aucun achat</strong> ont été écartés : ils ne portent pas de comportement d'achat et auraient tiré toutes les moyennes vers le bas.</li>
+          <li><strong>Quatre clients atypiques</strong> présentent des volumes sans commune mesure avec les autres. Le cinquième client le plus dépensier atteint 5 286 €, contre 326 040 € pour le premier, soit un rapport de 1 à 62. Ce ne sont pas des erreurs de saisie mais des acheteurs professionnels.</li>
+          <li><strong>Prix très asymétriques</strong> : le coefficient d'aplatissement du prix atteint 44,3, contre 0,3 pour l'âge. Quelques ouvrages très chers déforment toute la distribution.</li>
+          <li>Aucune donnée sur les visiteurs n'ayant pas acheté : impossible de calculer un taux de conversion.</li>
+        </ul>
+      </section>
+
+      <!-- 03 -->
+      <section class="sec" id="demarche">
+        <h2 class="sec-h"><span class="sec-n">03</span> Démarche</h2>
+
+        <ol class="steps">
+          <li>
+            <h3>Isoler les clients professionnels avant toute statistique</h3>
+            <p>
+              Les quatre acheteurs atypiques ont été identifiés puis traités séparément. Les
+              analyses comportementales portent sur la clientèle particulière seule ; les
+              indicateurs de chiffre d'affaires, eux, conservent tout le monde.
+            </p>
+            <div class="why">
+              <p class="why-l">Pourquoi ce choix</p>
+              <p>
+                Ces quatre clients représentent <strong>7,35 % du chiffre d'affaires</strong>.
+                Les garder dans l'analyse du comportement aurait faussé les moyennes, les corrélations et les tests, car leur poids écrase celui des autres clients.
+              </p>
+              <p>
+                Les supprimer n'était pas une solution non plus, car ils pèsent lourd dans le chiffre d'affaires. Ils ont donc été analysés à part.
+              </p>
+            </div>
+          </li>
+
+          <li>
+            <h3>Tester la normalité avant de choisir les tests</h3>
+            <p>
+              Avant toute mesure d'association, la distribution de l'âge et celle du prix ont
+              été confrontées à une loi normale : visuellement d'abord, puis par un test
+              statistique, complété par les mesures d'asymétrie et d'aplatissement.
+            </p>
+          </li>
+        </ol>
+
+        <figure class="fig">
+          <img src="../assets/img/missions/p09-normalite.png"
+               alt="Histogramme de la distribution de l'âge des clients superposé à une courbe d'ajustement gaussien. La distribution réelle est plus resserrée et décalée vers la gauche que la courbe théorique.">
+          <figcaption><span class="fig-n">Fig. 1</span>
+            Distribution de l'âge comparée à une courbe de loi normale. L'écart est visible à
+            l'œil, et confirmé par les indicateurs : asymétrie de 0,59 et aplatissement de 0,32
+            pour l'âge, contre <strong>5,45 et 44,32 pour le prix</strong>.
+          </figcaption>
+        </figure>
+
+        <div class="why">
+          <p class="why-l">Pourquoi cette étape est décisive</p>
+          <p>
+            Le test rejette la loi normale pour les deux variables. Le prix, en particulier, compte quelques valeurs très élevées qui déforment la distribution : un coefficient de Pearson, qui suppose une loi normale, aurait donné un résultat trompeur.
+          </p>
+          <p>
+            <strong>Toutes les corrélations ont donc été calculées avec la méthode de Spearman</strong>, qui compare les rangs plutôt que les valeurs et reste fiable quelle que soit la forme de la distribution.
+          </p>
+        </div>
+
+        <ol class="steps" start="3">
+          <li>
+            <h3>Mesurer la concentration du chiffre d'affaires</h3>
+            <p>
+              Une courbe de Lorenz a été construite, accompagnée de l'indice de Gini, une première fois sur l'ensemble des clients, une seconde fois sur les seuls
+              particuliers.
+            </p>
+            <div class="why">
+              <p class="why-l">Pourquoi deux calculs</p>
+              <p>
+                L'indice passe de <strong>0,44 toutes clientèles confondues à 0,40 hors clients
+                professionnels</strong>. La différence correspond au poids de ces quatre clients. Avec un seul calcul, on aurait cru la clientèle des particuliers plus concentrée qu'elle ne l'est.
+              </p>
+            </div>
+          </li>
+
+          <li>
+            <h3>Tester les associations, une hypothèse à la fois</h3>
+            <p>
+              Chaque question métier a été formulée en hypothèse nulle avant d'être testée :
+              test du Chi² pour croiser genre et catégorie de livre, corrélations de Spearman
+              pour l'âge face au montant, à la fréquence et au panier moyen, analyse de variance
+              pour l'âge face à la catégorie.
+            </p>
+          </li>
+
+          <li>
+            <h3>Recalculer par tranche d'âge</h3>
+            <p>
+              Le nuage de points âge / montant laissait deviner plusieurs régimes de
+              comportement. Trois tranches ont été délimitées (<strong>21-33, 34-53 et 54-96 ans</strong>) et chaque corrélation recalculée à l'intérieur de chacune.
+            </p>
+            <div class="why">
+              <p class="why-l">Pourquoi ce choix</p>
+              <p>
+                Cette étape change la conclusion. Le coefficient global de −0,87 laisse penser que les dépenses baissent régulièrement avec l'âge. Le calcul par tranche montre qu'il n'y a <strong>aucun lien significatif avant 54 ans</strong>, et un lien très fort après.
+              </p>
+              <p>
+                Sans ce découpage, on aurait recommandé de cibler par âge toute la clientèle, alors que seul le segment des plus de 54 ans le justifie.
+              </p>
+            </div>
+          </li>
+        </ol>
+
+        <figure class="fig">
+          <img src="../assets/img/missions/p09-lorenz.png"
+               alt="Courbe de Lorenz de la répartition des achats par client, nettement incurvée sous la diagonale d'égalité parfaite.">
+          <figcaption><span class="fig-n">Fig. 2</span>
+            Courbe de Lorenz. L'écart à la diagonale traduit la concentration : indice de Gini de 0,44, une inégalité réelle mais modérée pour du commerce en ligne.
+          </figcaption>
+        </figure>
+      </section>
+
+      <!-- 04 -->
+      <section class="sec" id="resultats">
+        <h2 class="sec-h"><span class="sec-n">04</span> Résultats &amp; impact</h2>
+
+        <div class="dtable">
+          <table>
+            <caption>Synthèse des tests statistiques</caption>
+            <thead>
+              <tr>
+                <th scope="col">Question métier</th>
+                <th scope="col">Méthode</th>
+                <th scope="col" class="num">Résultat</th>
+                <th scope="col">Conclusion</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Le genre influence-t-il la catégorie achetée ?</td>
+                <td>Chi²</td>
+                <td class="num">p &lt; 0,001</td>
+                <td>Oui, mais effet faible</td>
+              </tr>
+              <tr>
+                <td>L'âge influence-t-il le montant dépensé ?</td>
+                <td>Spearman</td>
+                <td class="num">ρ = −0,87</td>
+                <td>Oui, fortement</td>
+              </tr>
+              <tr>
+                <td>L'âge influence-t-il la fréquence d'achat ?</td>
+                <td>Spearman</td>
+                <td class="num">ρ = −0,66</td>
+                <td>Oui, modérément</td>
+              </tr>
+              <tr>
+                <td>L'âge influence-t-il le panier moyen ?</td>
+                <td>Spearman</td>
+                <td class="num">p = 0,50</td>
+                <td><strong>Non significatif</strong></td>
+              </tr>
+              <tr>
+                <td>L'âge influence-t-il la catégorie achetée ?</td>
+                <td>ANOVA</td>
+                <td class="num">η² = 0,11</td>
+                <td>Oui, mais explique 11 %</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <figure class="fig">
+          <img src="../assets/img/missions/p09-age-montant.png"
+               alt="Nuage de points du montant total des achats en fonction de l'âge des clients, avec une droite de régression décroissante. Un point isolé très haut à gauche correspond à un client professionnel.">
+          <figcaption><span class="fig-n">Fig. 3</span>
+            Montant total dépensé selon l'âge. La tendance décroissante est nette, mais le
+            calcul par tranche montre qu'elle se concentre après 54 ans. Le point isolé en haut
+            à gauche est l'un des clients professionnels.
+          </figcaption>
+        </figure>
+
+        <h3>Principaux enseignements</h3>
+        <ul class="bullets">
+          <li>
+            <strong>Après 54 ans, les clients achètent moins souvent, mais pas moins cher.</strong> Dans cette tranche, le montant total et la fréquence d'achat baissent ensemble, alors que le panier moyen reste stable.
+          </li>
+          <li>
+            <strong>Le genre a un effet réel mais faible.</strong> Le lien est statistiquement sûr, mais les écarts restent petits : c'est le grand volume de données qui permet de le détecter.
+          </li>
+          <li>
+            <strong>L'âge n'explique que 11 % du choix de catégorie.</strong> Le résultat est significatif, mais 89 % des différences viennent d'autres facteurs.
+          </li>
+        </ul>
+
+        <h3>Recommandations</h3>
+        <ul class="bullets">
+          <li><strong>Cibler la fréquence sur les 54 ans et plus</strong> (relances, abonnements, rendez-vous éditoriaux) plutôt que d'essayer d'augmenter leur panier, qui reste stable.</li>
+          <li><strong>Sécuriser les quatre comptes professionnels.</strong> 7,35 % du chiffre d'affaires sur quatre clients constitue un risque de dépendance ; ils méritent un suivi commercial dédié.</li>
+          <li><strong>Ne pas bâtir la personnalisation sur le genre seul.</strong> L'effet existe mais il est trop faible pour porter à lui seul une stratégie d'offre.</li>
+          <li><strong>Aligner le stock sur les volumes par catégorie</strong>, dont la structure est stable sur les 24 mois observés.</li>
+        </ul>
+      </section>
+
+      <!-- 05 -->
+      <section class="sec" id="limites">
+        <h2 class="sec-h"><span class="sec-n">05</span> Limites &amp; prochaines pistes</h2>
+        <p>
+          <strong>Un lien n'est pas une cause.</strong> Les données montrent que les plus de 54 ans achètent moins souvent, sans en donner la raison. Rien dans ces données ne
+          dit s'il s'agit d'une préférence pour le livre papier en magasin, d'une difficulté
+          d'usage du site ou d'un autre facteur.
+        </p>
+        <p>
+          <strong>Le segment senior reste sous-analysé.</strong> La tranche 54-96 ans est la
+          seule où un effet net apparaît, et c'est aussi la plus large : elle mélange
+          probablement des comportements très différents entre 55 et 90 ans.
+        </p>
+        <p>
+          <strong>Quatre clients ne suffisent pas à définir un segment.</strong> Les clients
+          professionnels sont trop peu nombreux pour qu'on en tire un profil type.
+        </p>
+        <p>
+          <strong>Un test peu adapté à la distribution de l'âge.</strong> L'analyse de variance
+          suppose des données normales, hypothèse rejetée plus haut pour l'âge. Le grand nombre
+          d'observations la rend assez robuste, mais un test de Kruskal-Wallis, qui ne fait pas
+          cette hypothèse, aurait été plus cohérent avec le reste de l'étude.
+        </p>
+
+        <h3>Prochaines pistes</h3>
+        <ul class="bullets">
+          <li>Approfondir le segment des plus de 54 ans par un découpage plus fin, et le confronter à des données qualitatives.</li>
+          <li>Suivre le parcours d'achat sur le site pour mesurer les abandons, impossibles à voir aujourd'hui faute de données de navigation.</li>
+          <li>Suivre l'indice de Gini dans le temps : sa progression signalerait une dépendance croissante à quelques comptes.</li>
+          <li>Tester les recommandations par expérimentation contrôlée plutôt que de les déployer d'emblée.</li>
+        </ul>
+      </section>
+
+    </article>
+  </div>
+
+  <nav class="shell m-nav" aria-label="Navigation entre les missions">
+    <a href="p10-eau-potable.html"><span>← Mission précédente</span><strong>Accès à l'eau potable</strong></a>
+    <a class="nx" href="p08-egalite-femmes-hommes.html"><span>Mission suivante →</span><strong>Index d'égalité femmes-hommes</strong></a>
+  </nav>
+
+</main>
+
+<footer class="site-foot shell">
+  <span>Suzanne Dong · Data Analyst · <a href="mailto:dong.suzanne@hotmail.com">dong.suzanne@hotmail.com</a></span>
+  <span><a href="../index.html">Accueil</a> · <a href="#main">Haut de page</a></span>
+</footer>
+
+<script src="../assets/js/main.js"></script>
+</body>
+</html>

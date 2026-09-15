@@ -1,0 +1,312 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>try{var t=localStorage.getItem('theme');if(t==='light'||t==='dark')document.documentElement.dataset.theme=t}catch(e){}</script>
+<title>Accès à l'eau potable · Suzanne Dong</title>
+<meta name="description" content="Tableau de bord Power BI à trois échelles géographiques pour orienter trois types d'intervention sur l'accès à l'eau potable.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..700&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+<a class="skip" href="#main">Aller au contenu</a>
+
+<header class="site-head">
+  <div class="shell head-in">
+    <a class="brand" href="../index.html">Suzanne Dong <span>Data Analyst</span></a>
+    <nav class="site-nav" aria-label="Navigation principale">
+      <!-- <a href="../index.html#phares">Missions phares</a> -->
+      <a href="../index.html#competences">Compétences</a>
+      <a href="../index.html#missions">Projets</a>
+      <a href="../veille.html">Veille</a>
+      <a href="../index.html#contact">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+  <section class="m-hero shell">
+    <p class="eyebrow">Mission P10 · Business Intelligence</p>
+    <h1>Où intervenir en priorité sur l'eau potable</h1>
+    <div class="m-meta">
+      <span><b>Janvier 2026</b></span>
+      <span>Client : <b>DWFA</b>, accès à l'eau potable</span>
+      <span>Secteur : <b>ONG / Politiques publiques</b></span>
+    </div>
+    <div class="tags">
+      <span class="tag">Power BI</span><span class="tag">Power Query</span>
+      <span class="tag">DAX</span><span class="tag">Modélisation en étoile</span>
+      <span class="tag">FAO &amp; OMS</span>
+    </div>
+  </section>
+
+  <div class="shell m-grid">
+
+    <aside class="rail">
+      <p class="rail-t">Sommaire</p>
+      <ol>
+        <li><a href="#contexte">Contexte &amp; besoin métier</a></li>
+        <li><a href="#donnees">Données</a></li>
+        <li><a href="#demarche">Démarche</a></li>
+        <li><a href="#resultats">Résultats &amp; impact</a></li>
+        <li><a href="#limites">Limites &amp; pistes</a></li>
+      </ol>
+    </aside>
+
+    <article class="m-body">
+
+      <ul class="kpis">
+        <li><span class="kpi-v">3</span><span class="kpi-l">axes d'intervention outillés séparément</span></li>
+        <li><span class="kpi-v">4</span><span class="kpi-l">pages, une par échelle de décision</span></li>
+        <li><span class="kpi-v">203</span><span class="kpi-l">pays couverts par le modèle</span></li>
+      </ul>
+
+      <!-- 01 -->
+      <section class="sec" id="contexte">
+        <h2 class="sec-h"><span class="sec-n">01</span> Contexte &amp; besoin métier</h2>
+        <p class="lede">
+          Une organisation dédiée à l'accès à l'eau potable doit décider où engager ses moyens.
+          Son budget est limité, ses interventions longues, et une erreur de ciblage peut limiter l'effet de ses actions pendant des années.
+        </p>
+        <p>
+          La difficulté tient à ce que l'organisation exerce <strong>trois métiers
+          différents</strong>, qui ne s'adressent pas aux mêmes pays :
+        </p>
+        <ul class="bullets">
+          <li><strong>Créer des services</strong> là où l'accès à l'eau est insuffisant ou inexistant.</li>
+          <li><strong>Moderniser des services</strong> existants mais de qualité insuffisante.</li>
+          <li><strong>Conseiller des gouvernements</strong> sur leurs politiques publiques de l'eau.</li>
+        </ul>
+        <p>
+          Un pays idéal pour créer des services (accès très faible, forte population urbaine) est souvent peu adapté au consulting, qui demande un gouvernement stable. <strong>Un simple classement des pays n'aurait donc pas suffi</strong> : il fallait un outil qui réponde à trois questions différentes à partir des mêmes données.
+        </p>
+      </section>
+
+      <!-- 02 -->
+      <section class="sec" id="donnees">
+        <h2 class="sec-h"><span class="sec-n">02</span> Données</h2>
+        <p>Quatre fichiers issus de la FAO et de l'OMS, plus un référentiel géographique :</p>
+        <div class="dtable">
+          <table>
+            <caption>Sources mobilisées</caption>
+            <thead>
+              <tr><th scope="col">Source</th><th scope="col">Contenu</th><th scope="col">Couverture</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>FAO</td><td>Population totale, urbaine et rurale</td><td class="num">2000 – 2018</td></tr>
+              <tr><td>OMS</td><td>Services d'eau basiques et de qualité</td><td class="num">2000 – 2017</td></tr>
+              <tr><td>OMS</td><td>Mortalité liée à l'eau insalubre</td><td class="num">2016</td></tr>
+              <tr><td>Banque mondiale</td><td>Indice de stabilité politique</td><td class="num">2000 – 2018</td></tr>
+              <tr><td>Référentiel</td><td>Rattachement pays → région OMS → continent</td><td class="num">Sans objet</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>Qualité et limites</h3>
+        <ul class="bullets">
+          <li><strong>Les périodes ne coïncident pas.</strong> La mortalité n'existe que pour 2016, alors que les autres séries courent sur près de vingt ans. Toute comparaison temporelle impliquant la mortalité est donc impossible, ce que le tableau de bord doit indiquer clairement.</li>
+          <li><strong>Nomenclatures divergentes.</strong> FAO et OMS ne nomment ni ne regroupent les pays de la même façon, d'où la nécessité d'un référentiel de rapprochement.</li>
+          <li><strong>Données déclaratives.</strong> Elles sont transmises par les États eux-mêmes ; les pays les moins dotés sont aussi ceux qui déclarent le moins bien.</li>
+          <li><strong>Fraîcheur.</strong> Les séries s'arrêtent entre 2016 et 2018 : un décalage habituel des statistiques internationales, à signaler aux décideurs.</li>
+        </ul>
+      </section>
+
+      <!-- 03 -->
+      <section class="sec" id="demarche">
+        <h2 class="sec-h"><span class="sec-n">03</span> Démarche</h2>
+
+        <ol class="steps">
+          <li>
+            <h3>Traduire chaque métier en indicateur avant de toucher à l'outil</h3>
+            <p>
+              La première étape n'a pas été technique. Chacun des trois axes d'intervention a
+              été traduit en une question mesurable, puis en un indicateur : couverture des
+              services basiques et poids de la population urbaine pour la création ; écart entre
+              service basique et service de qualité pour la modernisation ; stabilité politique
+              croisée à l'efficacité des politiques de l'eau pour le consulting.
+            </p>
+          </li>
+
+          <li>
+            <h3>Rédiger un blueprint</h3>
+            <p>
+              Un tableau de conception relie chaque besoin utilisateur à une mesure précise, à
+              un type de visualisation et à une échelle géographique.
+            </p>
+            <div class="why">
+              <p class="why-l">Pourquoi ce choix</p>
+              <p>
+                Sans ce document, on risque d'ajouter des graphiques simplement parce que les données existent, et le tableau de bord devient difficile à lire.
+              </p>
+              <p>
+                Le blueprint part au contraire <strong>des décisions à prendre</strong> : chaque visuel du tableau de bord répond à une ligne du blueprint.
+              </p>
+            </div>
+          </li>
+        </ol>
+
+        <figure class="fig fig--large">
+          <img src="../assets/img/missions/p10-blueprint.png"
+               alt="Tableau blueprint en quatre colonnes : besoins utilisateurs, mesures spécifiques à utiliser, visualisation et page. Neuf lignes : les trois domaines d'expertise (création de services, modernisation de services, consulting) associés à une carte et un nuage de points sur les pages mondiale et continentale ; le nombre de morts dus à l'eau insalubre en jauge sur la page nationale ; l'évolution de la population, sa répartition rurale et urbaine, le taux d'accès à l'eau potable et la stabilité politique en histogrammes, barres et courbes ; un filtre pour exclure les pays trop instables ou aux données non renseignées.">
+          <figcaption><span class="fig-n">Fig. 1</span>
+            Le blueprint de conception. Chacun des <strong>neuf besoins</strong>, dont les trois
+            domaines d'expertise, est relié à une mesure, à un type de visuel et aux pages où il
+            apparaît. La jauge de mortalité, par exemple, n'est prévue que sur la vue nationale.
+          </figcaption>
+        </figure>
+
+        <ol class="steps" start="3">
+          <li>
+            <h3>Préparer les données sous Power Query</h3>
+            <p>
+              Traitement des valeurs manquantes, correction des types, filtrage des lignes hors
+              périmètre, fusion des cinq sources et création de colonnes conditionnelles pour
+              catégoriser les niveaux de service.
+            </p>
+            <div class="why">
+              <p class="why-l">Pourquoi ce choix</p>
+              <p>
+                Toute la préparation est faite dans Power Query, avant les calculs. Les étapes restent visibles et se rejouent seules : quand les sources sont mises à jour, il suffit d'actualiser. Nettoyer dans les formules de calcul aurait rendu la logique difficile à relire et à vérifier.
+              </p>
+            </div>
+          </li>
+
+          <li>
+            <h3>Modéliser en étoile</h3>
+            <p>
+              Une table de faits centrale, entourée de tables de dimensions : géographie,
+              temps, et une table dédiée regroupant les mesures calculées.
+            </p>
+            <div class="why">
+              <p class="why-l">Pourquoi ce choix</p>
+              <p>
+                Le modèle en étoile est la structure la mieux adaptée à Power BI : une table centrale de chiffres, reliée à des tables qui la décrivent (pays, années). Les filtres s'appliquent alors de façon simple et prévisible, et le tableau de bord reste rapide.
+              </p>
+              <p>
+                Une table de mesures séparée regroupe tous les calculs en un point unique, ce
+                qui rend le modèle lisible pour la personne qui en héritera.
+              </p>
+            </div>
+          </li>
+
+          <li>
+            <h3>Une page par échelle de décision</h3>
+            <p>
+              Quatre pages : <strong>vue mondiale</strong>, <strong>vue continentale</strong>,
+              <strong>vue nationale</strong> et <strong>glossaire</strong>. Navigation par
+              boutons, filtres temporels, géographiques, quantitatifs et qualitatifs.
+            </p>
+            <div class="why">
+              <p class="why-l">Pourquoi ce choix</p>
+              <p>
+                Un décideur ne raisonne pas à deux échelles en même temps : il arbitre d'abord
+                entre continents, puis entre pays d'un continent. Une page par échelle suit ce raisonnement, sans tout mélanger sur un seul écran.
+              </p>
+              <p>
+                La page <strong>glossaire</strong> répond à une contrainte d'accessibilité :
+                les termes « service basique » et « service de qualité » ont une définition
+                OMS précise, que les destinataires du tableau ne connaissent pas. Sans elle,
+                les chiffres risquaient d'être mal interprétés.
+              </p>
+            </div>
+          </li>
+        </ol>
+
+        <figure class="fig fig--large">
+          <img src="../assets/img/missions/p10-vue-nationale.png"
+               alt="Page vue nationale du tableau de bord Power BI pour l'Angola, sélectionné dans le filtre Continent et pays. Quatre visuels : la population totale, urbaine et rurale de 2000 à 2018, en hausse continue ; le taux d'accès au service d'eau basique, qui passe d'environ 41 % à 56 %, sans courbe pour le service de qualité ; la stabilité politique, qui remonte d'environ −2 en 2000 à près de −0,3 après 2010 ; une jauge du taux de mortalité en 2016. Des lignes pointillées indiquent les moyennes de la période.">
+          <figcaption><span class="fig-n">Fig. 2</span>
+            La vue nationale, ici l'Angola. De 2000 à 2018, la population passe d'environ 16 à
+            31 millions d'habitants et l'accès au service d'eau basique progresse d'environ 41 %
+            à 56 %. La courbe du service de qualité est absente : la donnée n'est pas disponible
+            pour ce pays. La stabilité politique, très basse en 2000 (−2), remonte autour de −0,3
+            à partir de 2010.
+          </figcaption>
+        </figure>
+      </section>
+
+      <!-- 04 -->
+      <section class="sec" id="resultats">
+        <h2 class="sec-h"><span class="sec-n">04</span> Résultats &amp; impact</h2>
+
+        <figure class="fig fig--large">
+          <img src="../assets/img/missions/p10-vue-mondiale-creation.png"
+               alt="Page vue mondiale du tableau de bord Power BI, axe Création de services sélectionné. À gauche, les boutons Vue mondiale, Vue continentale et Vue nationale, puis des filtres sur l'année, le continent et le pays, la stabilité politique et le type de service d'eau. Au centre, une carte du monde colorée par continent avec la mention 11 pays concernés sur 203, soit 5 %, et un nuage de points croisant l'accès au service d'eau basique et la part de population urbaine par continent. À droite, trois graphiques par continent : population totale, urbaine et rurale, répartition des services d'eau basiques et de qualité, stabilité politique.">
+          <figcaption><span class="fig-n">Fig. 3</span>
+            La vue mondiale, axe « Création de services ». Les trois boutons du haut recomposent
+            toute la page selon le métier choisi : pour la création de services, <strong>11 pays
+            sur 203</strong> ressortent. Le nuage de points croise l'accès au service d'eau basique
+            et la part de population urbaine, les deux critères de cet axe. À droite, la
+            population, les services d'eau et la stabilité politique sont comparés par continent.
+          </figcaption>
+        </figure>
+
+        <p>
+          L'outil donne <strong>trois lectures des mêmes données</strong>, chacune avec sa recommandation.
+        </p>
+
+        <h3>Recommandations par axe</h3>
+        <ul class="bullets">
+          <li><strong>Création de services</strong> : cibler les pays à couverture basique faible et forte population urbaine, car la densité urbaine maximise le nombre de personnes desservies par infrastructure construite.</li>
+          <li><strong>Modernisation</strong> : prioriser les pays où l'écart entre service basique et service de qualité est le plus large. Ces pays ont déjà des infrastructures : améliorer l'existant y coûte moins cher que de bâtir.</li>
+          <li><strong>Consulting</strong> : se limiter aux pays politiquement stables. Une mission de conseil auprès d'un gouvernement suppose un interlocuteur durable ; sans stabilité, les conseils risquent d'être abandonnés au prochain changement de gouvernement.</li>
+        </ul>
+
+        <h3>Ce que l'outil change</h3>
+        <p>
+          Le tableau de bord permet de <strong>passer de 203 pays à une liste courte en quelques clics</strong>,
+          avec les critères explicites et reproductibles. Surtout, il rend visible le fait qu'un
+          pays écarté pour un axe peut être prioritaire pour un autre.
+        </p>
+      </section>
+
+      <!-- 05 -->
+      <section class="sec" id="limites">
+        <h2 class="sec-h"><span class="sec-n">05</span> Limites &amp; prochaines pistes</h2>
+        <p>
+          <strong>La fiabilité dépend entièrement de la fraîcheur des sources.</strong> Les
+          données s'arrêtent entre 2016 et 2018 : un pays ayant massivement investi depuis
+          apparaît encore dans sa situation d'il y a plusieurs années. L'outil oriente une
+          présélection, il ne dispense pas d'une vérification terrain.
+        </p>
+        <p>
+          <strong>La mortalité n'est disponible que pour 2016.</strong> Cet indicateur, pourtant
+          le plus parlant, ne peut ni être suivi dans le temps ni servir à mesurer l'effet d'une
+          intervention.
+        </p>
+        <p>
+          <strong>L'échelle nationale masque les disparités internes.</strong> Un pays à moyenne
+          correcte peut concentrer des zones très mal desservies. Or c'est à ce niveau que se décide où construire une infrastructure.
+        </p>
+
+        <h3>Prochaines pistes</h3>
+        <ul class="bullets">
+          <li>Descendre à l'échelle infranationale sur les pays présélectionnés, là où les données régionales existent.</li>
+          <li>Automatiser le rafraîchissement depuis les portails FAO et OMS pour supprimer la reprise manuelle.</li>
+          <li>Ajouter un indicateur de coût estimé par personne desservie, pour prioriser aussi selon le coût, et pas seulement selon le besoin.</li>
+          <li>Enrichir progressivement le glossaire à mesure que de nouveaux utilisateurs prennent l'outil en main.</li>
+        </ul>
+      </section>
+
+    </article>
+  </div>
+
+  <nav class="shell m-nav" aria-label="Navigation entre les missions">
+    <a href="p11-etude-marche-export.html"><span>← Mission précédente</span><strong>Étude de marché à l'export</strong></a>
+    <a class="nx" href="p09-librairie-lapage.html"><span>Mission suivante →</span><strong>Comportement d'achat en librairie</strong></a>
+  </nav>
+
+</main>
+
+<footer class="site-foot shell">
+  <span>Suzanne Dong · Data Analyst · <a href="mailto:dong.suzanne@hotmail.com">dong.suzanne@hotmail.com</a></span>
+  <span><a href="../index.html">Accueil</a> · <a href="#main">Haut de page</a></span>
+</footer>
+
+<script src="../assets/js/main.js"></script>
+</body>
+</html>

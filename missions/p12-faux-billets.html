@@ -1,0 +1,312 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>try{var t=localStorage.getItem('theme');if(t==='light'||t==='dark')document.documentElement.dataset.theme=t}catch(e){}</script>
+<title>Détection de faux billets · Suzanne Dong</title>
+<meta name="description" content="Modèle de classification supervisée détectant les faux billets à partir de six mesures géométriques, industrialisé en script de production.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..700&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+<a class="skip" href="#main">Aller au contenu</a>
+
+<header class="site-head">
+  <div class="shell head-in">
+    <a class="brand" href="../index.html">Suzanne Dong <span>Data Analyst</span></a>
+    <nav class="site-nav" aria-label="Navigation principale">
+      <!-- <a href="../index.html#phares">Missions phares</a> -->
+      <a href="../index.html#competences">Compétences</a>
+      <a href="../index.html#missions">Projets</a>
+      <a href="../veille.html">Veille</a>
+      <a href="../index.html#contact">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+  <section class="m-hero shell">
+    <p class="eyebrow">Mission P12 · Machine Learning</p>
+    <h1>Fiabiliser le contrôle des faux billets</h1>
+    <div class="m-meta">
+      <span><b>Mai 2026</b></span>
+      <span>Client : <b>ONCFM</b> (Organisation nationale de lutte contre le faux-monnayage)</span>
+      <span>Secteur : <b>Sécurité fiduciaire</b></span>
+    </div>
+    <div class="tags">
+      <span class="tag">Python</span><span class="tag">scikit-learn</span>
+      <span class="tag">pandas</span><span class="tag">Classification supervisée</span>
+      <span class="tag">Mise en production</span>
+    </div>
+  </section>
+
+  <div class="shell m-grid">
+
+    <aside class="rail">
+      <p class="rail-t">Sommaire</p>
+      <ol>
+        <li><a href="#contexte">Contexte &amp; besoin métier</a></li>
+        <li><a href="#donnees">Données</a></li>
+        <li><a href="#demarche">Démarche</a></li>
+        <li><a href="#resultats">Résultats &amp; impact</a></li>
+        <li><a href="#limites">Limites &amp; pistes</a></li>
+      </ol>
+    </aside>
+
+    <article class="m-body">
+
+      <ul class="kpis">
+        <li><span class="kpi-v">99 %</span><span class="kpi-l">d'accuracy sur le jeu de test</span></li>
+        <li><span class="kpi-v">3</span><span class="kpi-l">erreurs sur 300 billets testés</span></li>
+        <li><span class="kpi-v">1 500</span><span class="kpi-l">billets dans le jeu d'apprentissage</span></li>
+      </ul>
+
+      <!-- 01 ─────────────────────────────────────────────────────── -->
+      <section class="sec" id="contexte">
+        <h2 class="sec-h"><span class="sec-n">01</span> Contexte &amp; besoin métier</h2>
+        <p class="lede">
+          L'ONCFM contrôle l'authenticité des billets en circulation. Ce contrôle repose
+          aujourd'hui sur l'expertise humaine : un agent examine le billet et tranche.
+        </p>
+        <p>
+          Cette méthode est fiable mais lente, difficile à passer à l'échelle, et sa qualité
+          dépend de l'expérience de l'agent. La question posée était volontairement ouverte :
+          <strong>un algorithme peut-il distinguer un vrai d'un faux billet à partir des seules
+          dimensions géométriques</strong>, et si oui, à quel niveau de confiance ?
+        </p>
+        <p>
+          L'objectif est d'aider l'agent avec un pré-tri : le modèle traite les cas évidents, et l'agent se concentre sur les cas douteux. Il fallait donc un outil qu'une équipe non technique puisse utiliser.
+        </p>
+      </section>
+
+      <!-- 02 ─────────────────────────────────────────────────────── -->
+      <section class="sec" id="donnees">
+        <h2 class="sec-h"><span class="sec-n">02</span> Données</h2>
+        <p>
+          Un fichier unique de <strong>1 500 billets</strong>, dont l'authenticité est connue :
+          1 000 vrais et 500 faux. Chaque billet est décrit par <strong>six mesures
+          géométriques</strong> en millimètres : longueur de la diagonale, hauteur à gauche,
+          hauteur à droite, marge inférieure, marge supérieure et longueur.
+        </p>
+
+        <h3>Qualité et limites</h3>
+        <ul class="bullets">
+          <li><strong>37 valeurs manquantes</strong>, toutes concentrées sur la marge inférieure. Aucune autre colonne n'est incomplète.</li>
+          <li><strong>Jeu propre et homogène</strong> : c'est la principale limite. Ces billets sont des contrefaçons de laboratoire, pas nécessairement représentatives de ce qui circule réellement.</li>
+        </ul>
+      </section>
+
+      <!-- 03 ─────────────────────────────────────────────────────── -->
+      <section class="sec" id="demarche">
+        <h2 class="sec-h"><span class="sec-n">03</span> Démarche</h2>
+
+        <ol class="steps">
+          <li>
+            <h3>Reconstituer les 37 valeurs manquantes plutôt que les écarter</h3>
+            <p>
+              Les valeurs absentes de la marge inférieure ont été estimées par régression
+              linéaire, en utilisant les cinq autres mesures comme variables explicatives.
+              Le modèle est entraîné sur les billets complets, puis appliqué aux billets incomplets.
+            </p>
+            <div class="why">
+              <p class="why-l">Pourquoi ce choix</p>
+              <p>
+                Supprimer 37 lignes revenait à perdre 2,5 % du jeu : supportable en volume,
+                mais rien ne garantissait que ces absences soient réparties au hasard entre
+                vrais et faux billets. Les écarter aurait pu introduire un biais silencieux.
+              </p>
+            </div>
+          </li>
+
+          <li>
+            <h3>Repérer les mesures qui distinguent vrais et faux billets</h3>
+            <p>
+              Une matrice de corrélation, puis la distribution de chaque mesure pour les vrais et les faux billets. Ce second graphique montre le mieux quelles mesures séparent les deux groupes.
+            </p>
+          </li>
+        </ol>
+
+        <figure class="fig fig--large">
+          <img src="../assets/img/missions/p12-distributions.png"
+               alt="Six histogrammes, un par mesure géométrique, superposant la distribution des vrais et des faux billets. La longueur et la marge inférieure séparent nettement les deux populations, les autres se recouvrent largement.">
+          <figcaption><span class="fig-n">Fig. 1</span>
+            Distribution de chaque mesure selon le type de billet. La longueur (en bas à droite)
+            sépare presque parfaitement les deux populations ; la marge inférieure suit. Les
+            hauteurs et la diagonale, elles, se recouvrent largement : elles apporteront peu.
+          </figcaption>
+        </figure>
+
+        <figure class="fig">
+          <img src="../assets/img/missions/p12-correlation.png"
+               alt="Matrice de corrélation des six mesures géométriques. La longueur est corrélée négativement à la marge inférieure (−0,67) et à la marge supérieure (−0,52).">
+          <figcaption><span class="fig-n">Fig. 2</span>
+            Corrélations entre mesures. La longueur s'oppose aux deux marges (−0,67 et −0,52) :
+            un billet plus court a des marges plus épaisses. Quelques mesures liées entre elles suffisent donc à distinguer les billets.
+          </figcaption>
+        </figure>
+
+        <ol class="steps" start="3">
+          <li>
+            <h3>Découper puis standardiser, dans cet ordre</h3>
+            <p>
+              Les billets sont répartis en deux jeux : 80 % pour entraîner le modèle, 20 % pour le tester, en gardant <strong>la même proportion de vrais et de faux</strong> dans chacun. Les mesures sont ensuite mises à la même échelle.
+            </p>
+            <div class="why">
+              <p class="why-l">Pourquoi ce choix</p>
+              <p>
+                Garder la même proportion (2 vrais pour 1 faux) dans les deux jeux permet de tester le modèle dans des conditions réalistes.
+              </p>
+              <p>
+                La mise à l'échelle est <strong>calculée sur le jeu d'entraînement seulement</strong>, puis appliquée au jeu de test. Sinon, le modèle aurait déjà « vu » une partie des données de test, et son score aurait été trop optimiste (on parle de fuite de données).
+              </p>
+            </div>
+          </li>
+
+          <li>
+            <h3>Tester l'approche non supervisée, puis l'écarter</h3>
+            <p>
+              Avant de recourir à l'apprentissage supervisé, une réduction en composantes
+              principales suivie d'un partitionnement en deux groupes a été évaluée. Le score
+              de silhouette obtenu est de <strong>0,34</strong>.
+            </p>
+            <div class="why">
+              <p class="why-l">Pourquoi ce choix</p>
+              <p>
+                Un score de silhouette de 0,34 montre des groupes peu séparés. Surtout, cette méthode forme des groupes sans savoir lequel contient les faux billets, alors qu'on dispose déjà de cette information pour 1 500 billets.
+              </p>
+            </div>
+          </li>
+
+          <li>
+            <h3>Comparer trois modèles supervisés</h3>
+            <p>
+              Régression logistique, forêt aléatoire de cent arbres et méthode des plus proches
+              voisins (k = 5) ont été entraînés sur le même découpage et comparés sur le jeu de
+              test. Les deux premiers atteignent 99 % d'accuracy, le troisième 98 %.
+            </p>
+            <div class="why">
+              <p class="why-l">Pourquoi ce choix</p>
+              <p>
+                À performance équivalente, <strong>la régression logistique a été retenue contre
+                la forêt aléatoire</strong>. Elle est directement interprétable (on peut expliquer à un agent de contrôle quelles mesures pèsent dans la décision et dans quel sens), et elle produit un modèle léger, rapide et stable à mettre en production. La forêt aléatoire, plus difficile à expliquer, n'était pas plus précise.
+              </p>
+            </div>
+          </li>
+
+          <li>
+            <h3>Interroger le seuil de décision</h3>
+            <p>
+              Le modèle ne renvoie pas une classe mais une probabilité. Le seuil par défaut de
+              0,5 a été confronté à deux alternatives, 0,3 et 0,8, en comparant les matrices de
+              confusion obtenues.
+            </p>
+            <div class="why">
+              <p class="why-l">Pourquoi ce choix</p>
+              <p>
+                Les deux erreurs n'ont pas le même coût. Rejeter à tort un vrai billet entraîne une vérification manuelle. Laisser passer un faux billet est beaucoup plus grave. Changer le seuil permet de choisir quel risque réduire : c'est au commanditaire de le fixer.
+              </p>
+            </div>
+          </li>
+
+          <li>
+            <h3>Industrialiser</h3>
+            <p>
+              Le modèle et sa mise à l'échelle ont été enregistrés ensemble dans un seul fichier (.pkl). Un second script lit ce fichier, analyse une liste de billets et produit un fichier Excel avec, pour chaque billet, sa prédiction <strong>et sa probabilité</strong>.
+            </p>
+            <div class="why">
+              <p class="why-l">Pourquoi ce choix</p>
+              <p>
+                Enregistrer le modèle sans sa mise à l'échelle aurait donné de mauvaises prédictions sur les nouveaux billets : c'est pourquoi les deux sont enregistrés ensemble.
+              </p>
+              <p>
+                Le fichier indique aussi la probabilité, pas seulement la réponse vrai ou faux : un billet jugé faux à 51 % et un autre à 99,9 % ne se traitent pas de la même façon.
+              </p>
+            </div>
+          </li>
+        </ol>
+      </section>
+
+      <!-- 04 ─────────────────────────────────────────────────────── -->
+      <section class="sec" id="resultats">
+        <h2 class="sec-h"><span class="sec-n">04</span> Résultats &amp; impact</h2>
+        <p class="lede">
+          Le modèle classe correctement <strong>297 des 300 billets</strong> du jeu de test, avec
+          une précision et un rappel de 0,99.
+        </p>
+
+        <figure class="fig">
+          <img src="../assets/img/missions/p12-confusion.png"
+               alt="Matrice de confusion de la régression logistique : 98 faux billets correctement identifiés, 2 faux classés vrais, 1 vrai classé faux, 199 vrais correctement identifiés.">
+          <figcaption><span class="fig-n">Fig. 3</span>
+            Matrice de confusion sur le jeu de test. Les trois erreurs se répartissent en
+            <strong>2 faux billets classés comme vrais</strong> et 1 vrai billet rejeté à tort.
+            Les 2 faux billets non détectés sont les erreurs les plus graves : c'est ce nombre que le réglage du seuil permet de réduire.
+          </figcaption>
+        </figure>
+
+        <p>
+          La longueur du billet ressort comme la mesure la plus discriminante, ce que la
+          figure 1 laissait déjà voir. La décision du modèle repose donc surtout sur un critère simple, qu'un agent peut comprendre et vérifier.
+        </p>
+
+        <h3>Ce que le livrable permet concrètement</h3>
+        <figure class="fig fig--large">
+          <img src="../assets/img/missions/p12-production.png"
+               alt="Extrait du fichier Excel produit par le script de production : les six mesures de chaque billet, suivies de la colonne prediction (vrai ou faux) et de la colonne proba indiquant la confiance du modèle.">
+          <figcaption><span class="fig-n">Fig. 4</span>
+            Sortie du script de production. Chaque ligne porte sa prédiction et sa probabilité, ici entre 0,98 et 0,9998. Le fichier s'ouvre dans Excel : aucune compétence Python
+            n'est requise pour l'exploiter.
+          </figcaption>
+        </figure>
+
+        <h3>Recommandations</h3>
+        <ul class="bullets">
+          <li><strong>Utiliser le modèle pour un pré-tri, la décision finale restant à l'agent.</strong> Le modèle traite les billets classés avec une probabilité élevée et envoie les cas incertains à un agent.</li>
+          <li><strong>Faire fixer le seuil par le métier.</strong> Choisir entre laisser passer plus de faux billets ou faire plus de vérifications relève de la politique de contrôle de l'organisme.</li>
+          <li><strong>Tracer les cas douteux.</strong> Les billets proches du seuil constituent le meilleur jeu d'entraînement pour la version suivante.</li>
+        </ul>
+      </section>
+
+      <!-- 05 ─────────────────────────────────────────────────────── -->
+      <section class="sec" id="limites">
+        <h2 class="sec-h"><span class="sec-n">05</span> Limites &amp; prochaines pistes</h2>
+        <p>
+          <strong>Le jeu de données est propre et modeste.</strong> 1 500 billets homogènes ne
+          représentent pas la diversité des contrefaçons réelles. Un faussaire qui connaîtrait
+          les dimensions exactes d'un vrai billet produirait des faux que ce modèle ne verrait pas : il n'observe que la géométrie, pas le papier, l'encre ou les sécurités.
+        </p>
+        <p>
+          <strong>Le score de 99 % n'est pas garanti en conditions réelles.</strong> Il a été mesuré sur des billets de la même source que ceux de l'entraînement. La performance réelle ne sera connue qu'après un test sur des billets saisis sur le terrain.
+        </p>
+
+        <h3>Prochaines pistes</h3>
+        <ul class="bullets">
+          <li>Valider sur un échantillon de contrefaçons réelles, plus variées, avant tout déploiement.</li>
+          <li>Enrichir avec des variables non géométriques (spectrométrie, détection UV) pour couvrir les contrefaçons de meilleure facture.</li>
+          <li>Mettre en place un suivi de la dérive : si la distribution des mesures entrantes s'éloigne de celle de l'apprentissage, le modèle doit être réentraîné.</li>
+          <li>Formaliser la procédure de réentraînement pour que l'équipe métier puisse la déclencher sans intervention externe.</li>
+        </ul>
+      </section>
+
+    </article>
+  </div>
+
+  <nav class="shell m-nav" aria-label="Navigation entre les missions">
+    <a href="p13-bottleneck-ameliore.html"><span>← Mission précédente</span><strong>BottleNeck, version améliorée</strong></a>
+    <a class="nx" href="p11-etude-marche-export.html"><span>Mission suivante →</span><strong>Étude de marché à l'export</strong></a>
+  </nav>
+
+</main>
+
+<footer class="site-foot shell">
+  <span>Suzanne Dong · Data Analyst · <a href="mailto:dong.suzanne@hotmail.com">dong.suzanne@hotmail.com</a></span>
+  <span><a href="../index.html">Accueil</a> · <a href="#main">Haut de page</a></span>
+</footer>
+
+<script src="../assets/js/main.js"></script>
+</body>
+</html>

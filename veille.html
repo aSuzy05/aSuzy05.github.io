@@ -1,0 +1,356 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>try{var t=localStorage.getItem('theme');if(t==='light'||t==='dark')document.documentElement.dataset.theme=t}catch(e){}</script>
+<title>Veille métier &amp; technologique · Suzanne Dong</title>
+<meta name="description" content="Veille métier et technologique : six outils d'analyse exploratoire évalués sur les données d'un projet réel, les critères qui ont tranché, les évolutions de Pandas 3.0 à surveiller et un suivi automatisé.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..700&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+<a class="skip" href="#main">Aller au contenu</a>
+
+<header class="site-head">
+  <div class="shell head-in">
+    <a class="brand" href="index.html">Suzanne Dong <span>Data Analyst</span></a>
+    <nav class="site-nav" aria-label="Navigation principale">
+      <!-- <a href="index.html#phares">Missions phares</a> -->
+      <a href="index.html#competences">Compétences</a>
+      <a href="index.html#missions">Projets</a>
+      <a href="veille.html" aria-current="page">Veille</a>
+      <a href="index.html#contact">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+  <section class="m-hero shell">
+    <p class="eyebrow">Veille · Amélioration continue</p>
+    <h1>Veille métier &amp; technologique</h1>
+    <div class="m-meta">
+      <span><b>Septembre 2026</b></span>
+      <span>Projet d'application : <b>BottleNeck</b></span>
+      <span>Écosystème : <b>Python</b></span>
+    </div>
+    <div class="tags">
+      <span class="tag">Pandas</span><span class="tag">Polars</span>
+      <span class="tag">D-Tale</span><span class="tag">Sweetviz</span>
+      <span class="tag">RSS.app · Feedly</span>
+    </div>
+  </section>
+
+  <div class="shell m-grid">
+
+    <aside class="rail">
+      <p class="rail-t">Sommaire</p>
+      <ol>
+        <li><a href="#demarche">Démarche</a></li>
+        <li><a href="#metier">Veille métier</a></li>
+        <li><a href="#technologique">Veille technologique</a></li>
+        <li><a href="#enseignements">Enseignements</a></li>
+        <li><a href="#sources">Sources</a></li>
+        <li><a href="#formation">Formation &amp; accessibilité</a></li>
+        <li><a href="#amelioree">Version améliorée</a></li>
+      </ol>
+    </aside>
+
+    <article class="m-body">
+
+      <ul class="kpis">
+        <li><span class="kpi-v">6</span><span class="kpi-l">outils d'analyse exploratoire évalués</span></li>
+        <li><span class="kpi-v">2</span><span class="kpi-l">retenus : Pandas pour le diagnostic, Sweetviz pour la restitution</span></li>
+        <li><span class="kpi-v">1</span><span class="kpi-l">flux de veille automatisé</span></li>
+      </ul>
+
+      <!-- 01 ─────────────────────────────────────────────────────── -->
+      <section class="sec" id="demarche">
+        <h2 class="sec-h"><span class="sec-n">01</span> Une veille pour un besoin réel</h2>
+        <p class="lede">
+          Cette veille répond à une question précise : comment rendre le diagnostic de qualité des données plus rapide, et lisible par
+          des équipes qui ne sont pas techniques ?
+        </p>
+        <p>
+          Dans le projet BottleNeck, ce diagnostic (valeurs manquantes, doublons, valeurs aberrantes) était réalisé manuellement : long, exposé aux oublis, et réservé aux personnes sachant lire un notebook.
+        </p>
+
+        <ol class="steps">
+          <li>
+            <h3>Partir du besoin</h3>
+            <p>
+              Le premier critère a été la lisibilité du résultat pour le commanditaire et le comité de direction, avant la performance.
+            </p>
+          </li>
+          <li>
+            <h3>Tester sur les données du projet</h3>
+            <p>
+              Chaque outil a été installé et essayé dans l'environnement du projet. Ces tests ont révélé des incompatibilités que la documentation ne signalait pas.
+            </p>
+          </li>
+          <li>
+            <h3>Juger sur des critères au-delà de la performance</h3>
+            <p>
+              Lisibilité pour les équipes métier, robustesse, reproductibilité, sécurité,
+              <strong>sobriété</strong> et maintenabilité.
+            </p>
+          </li>
+          <li>
+            <h3>Automatiser le suivi</h3>
+            <p>
+              La page des nouveautés de Pandas n'ayant pas de flux RSS, elle a été convertie avec
+              RSS.app puis centralisée dans Feedly. Le flux collecte les nouveautés sans
+              notification : sa consultation reste une démarche active.
+            </p>
+          </li>
+        </ol>
+
+        <figure class="fig">
+          <img src="assets/img/veille-rss-app.png"
+               alt="Page RSS.app du flux « Pandas - Release notes » créé à partir de pandas.pydata.org/docs/whatsnew, avec l'adresse du flux et la dernière entrée « What's new in 3.0.5 (July 22, 2026) ».">
+          <figcaption><span class="fig-n">Fig. 1</span>
+            Le flux créé dans RSS.app à partir de la page des notes de version de Pandas. La dernière
+            entrée, « What's new in 3.0.5 », date du 22 juillet 2026.
+          </figcaption>
+        </figure>
+
+        <figure class="fig">
+          <img src="assets/img/veille-feedly.png"
+               alt="Feedly avec le flux « Pandas - Release notes » rangé dans un dossier Python, affichant les entrées « What's new in 3.0.5 » du 22 juillet 2026 et « What's new in 3.0.4 » du 28 juin 2026.">
+          <figcaption><span class="fig-n">Fig. 2</span>
+            Le flux ajouté à Feedly, dans un dossier Python. Les nouvelles versions de Pandas y
+            apparaissent sans recherche manuelle. Seul le titre est récupéré : le détail se lit dans la
+            documentation.
+          </figcaption>
+        </figure>
+      </section>
+
+      <!-- 02 ─────────────────────────────────────────────────────── -->
+      <section class="sec" id="metier">
+        <h2 class="sec-h"><span class="sec-n">02</span> Veille métier : quel outil pour l'EDA ?</h2>
+
+        <div class="dtable">
+          <table>
+            <caption>Verdicts de la veille métier</caption>
+            <thead>
+              <tr>
+                <th scope="col">Outil</th>
+                <th scope="col">Verdict</th>
+                <th scope="col">Ce qui a tranché</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row">Sweetviz</th>
+                <td>Retenu</td>
+                <td>Un rapport HTML autonome, lisible et partageable par un non-technicien ; un fichier statique, exposé seulement si on le transmet</td>
+              </tr>
+              <tr>
+                <th scope="row">Pandas</th>
+                <td>Conservé</td>
+                <td>Un diagnostic local, reproductible et léger, mais une sortie qui reste technique à lire</td>
+              </tr>
+              <tr>
+                <th scope="row">Polars</th>
+                <td>Non retenu</td>
+                <td>Aucun gain de vitesse sur 825 et 1 513 lignes, et une sortie aussi technique que Pandas</td>
+              </tr>
+              <tr>
+                <th scope="row">D-Tale</th>
+                <td>Écarté</td>
+                <td>Un serveur accessible depuis les autres appareils du réseau pendant l'exécution : un risque dès que les données sont sensibles</td>
+              </tr>
+              <tr>
+                <th scope="row">AutoViz</th>
+                <td>Écarté</td>
+                <td>Des graphiques trop nombreux et peu pertinents, puis une incompatibilité après la mise à jour de Pandas</td>
+              </tr>
+              <tr>
+                <th scope="row">ydata-profiling</th>
+                <td>Non évaluable</td>
+                <td>Un conflit de dépendances empêche son exécution dans l'environnement du projet</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="why">
+          <p class="why-l">Deux outils complémentaires</p>
+          <p>
+            Aucun outil ne couvrait seul les deux besoins. Pandas produit un diagnostic fiable et
+            reproductible ; Sweetviz le rend lisible par ceux qui décident.
+            Les outils ont donc été choisis d'abord selon leur usage.
+          </p>
+        </div>
+      </section>
+
+      <!-- 03 ─────────────────────────────────────────────────────── -->
+      <section class="sec" id="technologique">
+        <h2 class="sec-h"><span class="sec-n">03</span> Veille technologique : ce que change Pandas 3.0</h2>
+        <p class="lede">
+          Pandas est au cœur de toute préparation de données en Python. Sa version 3.0, publiée le 21 janvier 2026, modifie certains comportements lors de la mise à jour.
+        </p>
+        <p>Trois évolutions touchent directement l'analyse exploratoire :</p>
+
+        <ul class="bullets">
+          <li>
+            <strong>Des copies plus sûres.</strong> Avec le Copy-on-Write, désormais généralisé,
+            modifier un tableau n'altère plus par accident un autre tableau qui partageait ses
+            données. Contrepartie : certaines écritures en chaîne des anciens scripts n'ont plus
+            d'effet et doivent être revues.
+          </li>
+          <li>
+            <strong>Un vrai type pour le texte.</strong> Les colonnes de texte ne sont plus
+            stockées dans le type générique <code>object</code> : les traitements qui s'appuyaient
+            dessus sont à vérifier.
+          </li>
+          <li>
+            <strong>Des anti-jointures natives.</strong> Isoler en une seule opération ce qui n'a
+            pas d'équivalent de l'autre côté : par exemple, les produits de l'ERP absents du site
+            marchand.
+          </li>
+        </ul>
+
+        <div class="why">
+          <p class="why-l">Verdict pour le projet</p>
+          <p>
+            Des évolutions utiles à moyen terme, mais un impact limité à court terme : elles changent des comportements existants : il faut <strong>vérifier la compatibilité</strong> avant de migrer. L'adoption se fera donc progressivement, en suivant les prochaines versions.
+          </p>
+        </div>
+      </section>
+
+      <!-- 04 ─────────────────────────────────────────────────────── -->
+      <section class="sec" id="enseignements">
+        <h2 class="sec-h"><span class="sec-n">04</span> Enseignements de la veille</h2>
+
+        <ul class="bullets">
+          <li>
+            <strong>Le besoin des utilisateurs passe avant la vitesse.</strong> Polars est plus rapide, mais n'aidait pas des lecteurs non techniques, et à ce volume de données la vitesse ne changeait rien.
+          </li>
+          <li>
+            <strong>La sécurité doit être testée.</strong> L'exposition réseau de
+            D-Tale n'apparaissait pas à la lecture ; un test l'a mise en évidence.
+          </li>
+          <li>
+            <strong>La compatibilité est un critère à part entière.</strong> Deux outils sur six
+            sont restés inutilisables à cause de leurs dépendances. Tester dans l'environnement réel
+            évite d'adopter un outil qui casse au premier déploiement.
+          </li>
+          <li>
+            <strong>Mettre à jour demande de faire des choix.</strong> Passer à la dernière version de Pandas a rendu AutoViz inutilisable : garder un environnement à jour comptait plus qu'un outil déjà jugé peu pertinent.
+          </li>
+          <li>
+            <strong>L'automatisation a ses limites.</strong> Le flux de veille collecte les nouveautés, mais n'envoie pas d'alerte.
+          </li>
+        </ul>
+
+        <p>
+          <strong>Limite :</strong> deux outils n'ayant pas pu être évalués jusqu'au bout,
+          la comparaison reste partielle. ydata-profiling sera retesté une fois ses dépendances
+          mises à jour.
+        </p>
+      </section>
+
+      <!-- 05 ─────────────────────────────────────────────────────── -->
+      <section class="sec" id="sources">
+        <h2 class="sec-h"><span class="sec-n">05</span> Sources</h2>
+        <p>Sources consultées en septembre 2026.</p>
+
+        <h3>Outils d'analyse exploratoire</h3>
+        <ul class="bullets">
+          <li>
+            Ibekwe, Kingsley. <cite><a href="https://medium.com/machine-learning-mastery/4-tools-for-automatic-exploratory-data-analysis-eda-in-python-4d62e87898c5" target="_blank" rel="noopener noreferrer">« 4 Tools for Automatic Exploratory Data Analysis (EDA) in Python »</a></cite>,
+            Medium, 13 avril 2022. Consulté le 11 septembre 2026.
+          </li>
+          <li>
+            Tocilins-Ruberts, Antons. <cite><a href="https://towardsdatascience.com/eda-with-polars-step-by-step-guide-for-pandas-users-part-1-b2ec500a1008/" target="_blank" rel="noopener noreferrer">« EDA with Polars: Step-by-Step Guide for Pandas Users (Part 1) »</a></cite>,
+            Towards Data Science, 6 juillet 2023. Consulté le 13 septembre 2026.
+          </li>
+          <li>
+            Patel, Shiv. <cite><a href="https://medium.com/@swordshiv7/visualizing-data-made-simple-a-walkthrough-of-autoviz-dtale-and-sweetviz-e88b5881ae6e" target="_blank" rel="noopener noreferrer">« Visualizing Data Made Simple: A Walkthrough of AutoViz, Dtale, and SweetViz »</a></cite>,
+            Medium, 15 octobre 2023. Consulté le 11 septembre 2026.
+          </li>
+        </ul>
+
+        <h3>Documentation officielle de Pandas</h3>
+        <ul class="bullets">
+          <li>
+            pandas. <cite><a href="https://pandas.pydata.org/docs/whatsnew/index.html" target="_blank" rel="noopener noreferrer">« What's new », notes de version</a></cite>,
+            documentation pandas. Consulté le 11 septembre 2026.
+          </li>
+          <li>
+            pandas. <cite><a href="https://pandas.pydata.org/docs/whatsnew/v3.0.0.html" target="_blank" rel="noopener noreferrer">« What's new in pandas 3.0.0 »</a></cite>,
+            documentation pandas, 21 janvier 2026. Consulté le 11 septembre 2026.
+          </li>
+          <li>
+            pandas. <cite><a href="https://pandas.pydata.org/docs/user_guide/copy_on_write.html" target="_blank" rel="noopener noreferrer">« Copy-on-Write (CoW) »</a></cite>,
+            guide utilisateur pandas. Consulté le 11 septembre 2026.
+          </li>
+          <li>
+            pandas. <cite><a href="https://pandas.pydata.org/docs/whatsnew/v2.2.0.html" target="_blank" rel="noopener noreferrer">« What's new in pandas 2.2.0 »</a></cite>,
+            documentation pandas, 19 janvier 2024. Consulté le 11 septembre 2026.
+          </li>
+        </ul>
+      </section>
+
+      <!-- 06 ─────────────────────────────────────────────────────── -->
+      <section class="sec" id="formation">
+        <h2 class="sec-h"><span class="sec-n">06</span> Formation &amp; accessibilité</h2>
+        <p>
+          Les résultats s'adressent au responsable des ventes et au comité de direction de
+          BottleNeck, qui ne sont pas analystes. L'objectif est qu'ils puissent lire et utiliser les
+          livrables sans passer par l'analyste à chaque question.
+        </p>
+
+        <h3>Formation</h3>
+        <ul class="bullets">
+          <li><strong>Un dictionnaire des données</strong> : chaque colonne est décrite avec sa signification métier.</li>
+          <li><strong>Une session de 20 à 30 minutes en visio</strong> à la livraison du premier rapport, pour répondre aux questions et ajuster le format si besoin.</li>
+        </ul>
+
+        <h3>Accessibilité</h3>
+        <ul class="bullets">
+          <li><strong>Des contrastes suffisants</strong> et une police lisible, dans les textes comme dans les graphiques.</li>
+          <li><strong>Un contenu découpé en parties courtes</strong>, avec un titre explicite pour chaque graphique.</li>
+          <li><strong>Les résultats clés aussi rédigés en texte</strong>, pour être compris sans le graphique et lus par un lecteur d'écran.</li>
+          <li><strong>Pour les collaborateurs en situation de handicap</strong> : la couleur n'est jamais le seul repère d'une information, les supports sont envoyés avant la session, et la visio est proposée avec sous-titres.</li>
+        </ul>
+      </section>
+
+      <!-- 07 ─────────────────────────────────────────────────────── -->
+      <section class="sec" id="amelioree">
+        <h2 class="sec-h"><span class="sec-n">07</span> Version améliorée d'un projet</h2>
+        <p>
+          Cette veille a servi à améliorer un projet existant : l'analyse des ventes et des stocks de
+          <a href="missions/p06-bottleneck.html">BottleNeck</a>, un marchand de vins, réalisée en 2025.
+          La version améliorée (P13) utilise les outils retenus ici et revoit les contrôles de qualité des données.
+        </p>
+        <p>
+          La reprise a permis de corriger 3 prix négatifs et 4 ventes en double sur le site. Le chiffre
+          d'affaires recalculé passe de 154 798 € à 143 680 €. Le responsable des ventes dispose aussi d'un
+          rapport Sweetviz, lisible sans notebook.
+        </p>
+        <p><a class="btn" href="missions/p13-bottleneck-ameliore.html">Voir le projet amélioré (P13)</a></p>
+      </section>
+
+    </article>
+  </div>
+
+  <nav class="shell m-nav" aria-label="Navigation">
+    <a href="index.html#missions"><span>← Retour</span><strong>Toutes les missions</strong></a>
+    <a class="nx" href="missions/p13-bottleneck-ameliore.html"><span>Projet d'application →</span><strong>BottleNeck, version améliorée</strong></a>
+  </nav>
+
+</main>
+
+<footer class="site-foot shell">
+  <span>Suzanne Dong · Data Analyst · <a href="mailto:dong.suzanne@hotmail.com">dong.suzanne@hotmail.com</a></span>
+  <span><a href="index.html">Accueil</a> · <a href="#main">Haut de page</a></span>
+</footer>
+
+<script src="assets/js/main.js"></script>
+</body>
+</html>

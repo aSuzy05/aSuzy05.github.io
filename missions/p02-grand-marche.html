@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>try{var t=localStorage.getItem('theme');if(t==='light'||t==='dark')document.documentElement.dataset.theme=t}catch(e){}</script>
+<title>Chute de chiffre d'affaires · Suzanne Dong</title>
+<meta name="description" content="Analyse sous Excel de la chute du chiffre d'affaires d'un e-commerçant : effet mix produit, taux de conversion et recommandations.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..700&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+<a class="skip" href="#main">Aller au contenu</a>
+
+<header class="site-head">
+  <div class="shell head-in">
+    <a class="brand" href="../index.html">Suzanne Dong <span>Data Analyst</span></a>
+    <nav class="site-nav" aria-label="Navigation principale">
+      <!-- <a href="../index.html#phares">Missions phares</a> -->
+      <a href="../index.html#competences">Compétences</a>
+      <a href="../index.html#missions">Projets</a>
+      <a href="../veille.html">Veille</a>
+      <a href="../index.html#contact">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+  <section class="m-hero shell">
+    <p class="eyebrow">Mission P02 · Analyse commerciale</p>
+    <h1>Expliquer une chute de chiffre d'affaires</h1>
+    <div class="m-meta">
+      <span><b>Octobre 2024</b></span>
+      <span>Client : <b>Grand Marché</b>, e-commerce</span>
+      <span>Période : <b>mars 2019 à février 2020</b></span>
+    </div>
+    <div class="tags">
+      <span class="tag">Excel</span><span class="tag">Tableaux croisés dynamiques</span>
+      <span class="tag">Analyse de rupture</span><span class="tag">Taux de conversion</span>
+    </div>
+  </section>
+
+  <div class="shell m-grid">
+
+    <aside class="rail">
+      <p class="rail-t">Sommaire</p>
+      <ol>
+        <li><a href="#contexte">Contexte &amp; besoin métier</a></li>
+        <li><a href="#donnees">Données</a></li>
+        <li><a href="#demarche">Démarche</a></li>
+        <li><a href="#resultats">Résultats &amp; impact</a></li>
+        <li><a href="#limites">Limites &amp; pistes</a></li>
+      </ol>
+    </aside>
+
+    <article class="m-body">
+
+      <ul class="kpis">
+        <li><span class="kpi-v">Févr. 2020</span><span class="kpi-l">point de rupture identifié</span></li>
+        <li><span class="kpi-v">3</span><span class="kpi-l">causes distinctes isolées</span></li>
+        <li><span class="kpi-v">12</span><span class="kpi-l">mois d'historique disponibles</span></li>
+      </ul>
+
+      <!-- 01 -->
+      <section class="sec" id="contexte">
+        <h2 class="sec-h"><span class="sec-n">01</span> Contexte &amp; besoin métier</h2>
+        <p class="lede">
+          Un e-commerçant qui constate une chute de son chiffre d'affaires souhaite
+          <strong>identifier les raisons de cette baisse et anticiper l'évolution de la situation</strong>.
+        </p>
+        <p>
+          L'objectif est de <strong>décomposer cette baisse en facteurs sur lesquels l'entreprise peut agir</strong>. Elle peut venir d'une perte de trafic, d'une baisse de conversion, d'un panier moyen en recul, d'un changement de gamme, ou de plusieurs de ces facteurs à la fois.
+
+        </p>
+      </section>
+
+      <!-- 02 -->
+      <section class="sec" id="donnees">
+        <h2 class="sec-h"><span class="sec-n">02</span> Données</h2>
+        <p>
+          Un fichier Excel de clients affiliés couvrant douze mois, de mars 2019 à février 2020.
+          Il contient les transactions, les catégories de produits, le trafic du site et le temps
+          passé par visite.
+        </p>
+        <p>
+          Trois familles de produits : high-tech, biens de consommation et alimentaire.
+        </p>
+
+        <h3>Qualité et limites</h3>
+        <ul class="bullets">
+          <li><strong>Douze mois seulement.</strong> C'est la limite majeure : sans année précédente, aucune saisonnalité ne peut être établie. Une baisse en février peut être structurelle ou parfaitement habituelle : les données ne permettent pas de trancher.</li>
+          <li><strong>Périmètre restreint aux clients affiliés</strong>, qui ne représentent pas nécessairement l'ensemble de la clientèle.</li>
+          <li><strong>Aucune donnée sur les visiteurs non acheteurs</strong> au-delà du volume de trafic : les causes d'abandon restent invisibles.</li>
+        </ul>
+      </section>
+
+      <!-- 03 -->
+      <section class="sec" id="demarche">
+        <h2 class="sec-h"><span class="sec-n">03</span> Démarche</h2>
+
+        <ol class="steps">
+          <li>
+            <h3>Structurer avant d'analyser</h3>
+            <p>
+              Import et mise en forme du fichier, puis construction de tableaux croisés
+              dynamiques croisant chiffre d'affaires, nombre de ventes et catégorie de produit
+              par mois.
+            </p>
+          </li>
+
+          <li>
+            <h3>Localiser le point de rupture</h3>
+            <p>
+              Les courbes mensuelles de chiffre d'affaires, de trafic et de panier moyen
+              situent la rupture en <strong>février 2020</strong>, après une progression continue.
+            </p>
+            <div class="why">
+              <p class="why-l">Pourquoi dater précisément</p>
+              <p>
+                Une baisse progressive et une rupture nette ne s'expliquent pas de la même façon.
+                Une rupture datée oriente immédiatement l'enquête vers ce qui a
+                changé à ce moment-là, plutôt que vers la recherche d'une cause progressive.
+              </p>
+            </div>
+          </li>
+
+          <li>
+            <h3>Décomposer le chiffre d'affaires par catégorie</h3>
+            <p>
+              Le chiffre d’affaires a été réparti par famille de produits afin de suivre l’évolution de chacune au fil du temps.
+            </p>
+            <div class="why">
+              <p class="why-l">Pourquoi ne pas s'arrêter au total</p>
+              <p>
+                Le total agrégé montre une baisse, sans en révéler la nature.
+                La décomposition met au jour la <strong>disparition progressive de la
+                catégorie high-tech</strong>, produit à prix unitaire élevé, et le basculement
+                des ventes vers l'alimentaire, à prix unitaire faible.
+              </p>
+              <p>
+                Les ventes se sont reportées sur des produits moins chers : la baisse vient d'un <strong>changement de gamme</strong>.
+              </p>
+            </div>
+          </li>
+
+          <li>
+            <h3>Reconstruire un taux de conversion</h3>
+            <p>
+              Le trafic et le nombre de ventes ont été croisés mois par mois pour calculer un
+              taux de conversion, indicateur absent du fichier source.
+            </p>
+            <div class="why">
+              <p class="why-l">Pourquoi cet indicateur</p>
+              <p>
+                Le trafic progressait fortement, les ventes beaucoup moins vite. En rapportant les ventes au trafic, on voit que le <strong>taux de conversion baisse</strong> : le site attirait plus de visiteurs, mais en transformait une part de plus en plus faible.
+              </p>
+            </div>
+          </li>
+
+        </ol>
+      </section>
+
+      <!-- 04 -->
+      <section class="sec" id="resultats">
+        <h2 class="sec-h"><span class="sec-n">04</span> Résultats &amp; impact</h2>
+        <p class="lede">
+          La baisse du chiffre d'affaires s'explique par <strong>trois mécanismes</strong>, qui demandent des réponses différentes.
+        </p>
+
+        <div class="dtable">
+          <table>
+            <caption>Décomposition de la baisse</caption>
+            <thead>
+              <tr><th scope="col">Mécanisme</th><th scope="col">Observation</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Disparition du high-tech</td>
+                <td>La catégorie s'efface progressivement du catalogue</td>
+              </tr>
+              <tr>
+                <td>Effet mix produit</td>
+                <td>Bascule vers l'alimentaire, à prix unitaire plus faible</td>
+              </tr>
+              <tr>
+                <td>Baisse de conversion</td>
+                <td>Trafic en forte hausse, ventes en hausse plus lente</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <figure class="fig fig--large">
+          <img src="../assets/img/missions/p02-evolution-ca.png"
+               alt="Courbes du chiffre d'affaires mensuel par catégorie, clients affiliés, de septembre à février. Nourriture : de 13 855 € à 24 899 €. Biens de consommation : de 10 543 € à 14 764 €. High-tech : de 3 002 € à 4 341 € en décembre, 2 713 € en janvier, puis 0 € en février.">
+          <figcaption><span class="fig-n">Fig. 1</span>
+            Le chiffre d'affaires par catégorie, clients affiliés, de septembre 2019 à
+            février 2020. Le high-tech recule dès janvier puis tombe à <strong>0 €</strong> en
+            février, pendant que l'alimentaire passe de 18 216 € à <strong>24 899 €</strong> :
+            l'effet mix produit se lit directement sur les courbes.
+          </figcaption>
+        </figure>
+
+        <h3>Ce que cela change pour l'entreprise</h3>
+        <p>
+          Les deux premiers mécanismes sont <strong>liés</strong> : vendre de l'alimentaire à la place du high-tech fait baisser le chiffre d'affaires, même à volume constant. Il s'agit d'un choix d'assortiment plus que d'un problème commercial.
+        </p>
+        <p>
+          Le troisième est différent : <strong>le site attire de plus en plus de visiteurs, mais en convertit peu</strong>.
+
+        </p>
+
+        <h3>Recommandations</h3>
+        <ul class="bullets">
+          <li><strong>Traiter la conversion en priorité.</strong> Simplifier le parcours d'achat : le trafic est déjà payé, chaque point de conversion gagné se convertit directement en chiffre d'affaires.</li>
+          <li><strong>Personnaliser les recommandations produit</strong> pour augmenter le panier moyen et compenser la baisse du prix unitaire liée au mix.</li>
+          <li><strong>Trancher explicitement sur le high-tech.</strong> Si la sortie de gamme est délibérée, la cible de chiffre d'affaires doit être révisée en conséquence ; si elle ne l'est pas, c'est un problème d'approvisionnement à traiter en amont.</li>
+          <li><strong>Ne pas piloter sur le chiffre d'affaires global seul.</strong> Suivre séparément volume, prix moyen et taux de conversion, faute de quoi les effets continueront de se masquer les uns les autres.</li>
+        </ul>
+      </section>
+
+      <!-- 05 -->
+      <section class="sec" id="limites">
+        <h2 class="sec-h"><span class="sec-n">05</span> Limites &amp; prochaines pistes</h2>
+        <p>
+          <strong>Douze mois ne permettent aucune conclusion saisonnière.</strong> Sans année de
+          comparaison, il est impossible d'affirmer que février est un mois structurellement
+          faible. C'est la principale limite de cette analyse.
+        </p>
+        <p>
+          <strong>Les causes de non-achat restent invisibles.</strong> On mesure que la
+          conversion baisse, sans savoir à quelle étape les visiteurs abandonnent (recherche, fiche produit, panier ou paiement). Les recommandations sur le parcours restent donc
+          des hypothèses à tester.
+        </p>
+        <p>
+          <strong>La corrélation entre temps passé et panier n'établit aucune causalité.</strong>
+          Un visiteur qui reste longtemps achète peut-être davantage, mais il est tout aussi
+          possible qu'il reste longtemps <em>parce qu'</em>il a l'intention d'acheter.
+        </p>
+
+        <h3>Prochaines pistes</h3>
+        <ul class="bullets">
+          <li>Conduire une analyse des non-achats pour transformer les hypothèses en diagnostic.</li>
+          <li>Constituer un historique sur plusieurs années afin d'isoler la saisonnalité de la tendance.</li>
+          <li>Industrialiser ce suivi mensuel dans un outil de BI : reconduire l'analyse manuellement chaque mois est coûteux et sujet à erreur.</li>
+        </ul>
+      </section>
+
+    </article>
+  </div>
+
+  <nav class="shell m-nav" aria-label="Navigation entre les missions">
+    <a href="p04-sous-nutrition.html"><span>← Mission précédente</span><strong>Sous-nutrition dans le monde</strong></a>
+    <a class="nx" href="p13-bottleneck-ameliore.html"><span>Mission suivante →</span><strong>BottleNeck, version améliorée</strong></a>
+  </nav>
+
+</main>
+
+<footer class="site-foot shell">
+  <span>Suzanne Dong · Data Analyst · <a href="mailto:dong.suzanne@hotmail.com">dong.suzanne@hotmail.com</a></span>
+  <span><a href="../index.html">Accueil</a> · <a href="#main">Haut de page</a></span>
+</footer>
+
+<script src="../assets/js/main.js"></script>
+</body>
+</html>

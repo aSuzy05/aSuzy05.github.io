@@ -1,0 +1,265 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>try{var t=localStorage.getItem('theme');if(t==='light'||t==='dark')document.documentElement.dataset.theme=t}catch(e){}</script>
+<title>Sous-nutrition dans le monde · Suzanne Dong</title>
+<meta name="description" content="Étude de santé publique sur la sous-nutrition mondiale à partir des bilans alimentaires de la FAO : indicateurs dérivés et cas d'étude.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..700&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+<a class="skip" href="#main">Aller au contenu</a>
+
+<header class="site-head">
+  <div class="shell head-in">
+    <a class="brand" href="../index.html">Suzanne Dong <span>Data Analyst</span></a>
+    <nav class="site-nav" aria-label="Navigation principale">
+      <!-- <a href="../index.html#phares">Missions phares</a> -->
+      <a href="../index.html#competences">Compétences</a>
+      <a href="../index.html#missions">Projets</a>
+      <a href="../veille.html">Veille</a>
+      <a href="../index.html#contact">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+  <section class="m-hero shell">
+    <p class="eyebrow">Mission P04 · Santé publique</p>
+    <h1>Mesurer la sous-nutrition à l'échelle mondiale</h1>
+    <div class="m-meta">
+      <span><b>Décembre 2024</b></span>
+      <span>Source : <b>FAO</b> (Organisation des Nations unies pour l'alimentation)</span>
+      <span>Période : <b>2013-2017</b></span>
+    </div>
+    <div class="tags">
+      <span class="tag">Python</span><span class="tag">pandas</span>
+      <span class="tag">Indicateurs dérivés</span><span class="tag">Données ouvertes</span>
+    </div>
+  </section>
+
+  <div class="shell m-grid">
+
+    <aside class="rail">
+      <p class="rail-t">Sommaire</p>
+      <ol>
+        <li><a href="#contexte">Contexte &amp; besoin métier</a></li>
+        <li><a href="#donnees">Données</a></li>
+        <li><a href="#demarche">Démarche</a></li>
+        <li><a href="#resultats">Résultats &amp; impact</a></li>
+        <li><a href="#limites">Limites &amp; pistes</a></li>
+      </ol>
+    </aside>
+
+    <article class="m-body">
+
+      <ul class="kpis">
+        <li><span class="kpi-v">48 %</span><span class="kpi-l">de sous-nutrition en Haïti, pays le plus touché</span></li>
+        <li><span class="kpi-v">2 500</span><span class="kpi-l">kcal/jour, seuil de référence FAO retenu</span></li>
+        <li><span class="kpi-v">4</span><span class="kpi-l">jeux de données FAO croisés</span></li>
+      </ul>
+
+      <!-- 01 -->
+      <section class="sec" id="contexte">
+        <h2 class="sec-h"><span class="sec-n">01</span> Contexte &amp; besoin métier</h2>
+        <p class="lede">
+          La planète produit-elle assez pour nourrir tout le monde ?
+          Et si oui, pourquoi une partie de l'humanité reste-t-elle sous-alimentée ?
+        </p>
+        <p>
+          La réponse <strong>ne figure pas directement dans les données</strong>. La FAO recense des tonnages, des populations et des calories disponibles : pour estimer « combien de personnes pourraient être nourries », il faut construire de nouveaux indicateurs.
+        </p>
+        <p>
+          Trois questions structurent l'étude : quels pays sont les plus touchés, comment se
+          répartit l'aide alimentaire, et la disponibilité mondiale suffirait-elle en théorie à
+          couvrir les besoins.
+        </p>
+      </section>
+
+      <!-- 02 -->
+      <section class="sec" id="donnees">
+        <h2 class="sec-h"><span class="sec-n">02</span> Données</h2>
+        <p>Quatre jeux de données de la FAO :</p>
+        <ul class="bullets">
+          <li><strong>Population</strong> par pays et par année.</li>
+          <li><strong>Sous-nutrition</strong> : nombre de personnes en situation de sous-alimentation.</li>
+          <li><strong>Disponibilité alimentaire</strong> : production, importations, exportations et disponibilité calorique par produit, pour l'année 2017.</li>
+          <li><strong>Aide alimentaire</strong> reçue par pays, de 2013 à 2016.</li>
+        </ul>
+        <p>
+          <strong>Aucune donnée à caractère personnel</strong> : elle est hors périmètre RGPD.
+        </p>
+
+        <h3>Qualité et limites</h3>
+        <ul class="bullets">
+          <li><strong>Périodes non alignées</strong> : la disponibilité alimentaire n'existe que pour 2017, l'aide alimentaire s'arrête en 2016. Aucune analyse croisée dans le temps n'est possible.</li>
+          <li><strong>Unités hétérogènes</strong> : milliers de tonnes, kilocalories par personne et par jour, milliers d'habitants. Toute opération exigeait une conversion d'unités.</li>
+          <li><strong>Données déclaratives</strong>, transmises par les États. Les pays les plus touchés sont souvent ceux dont l'appareil statistique est le plus fragile.</li>
+          <li><strong>La sous-nutrition est estimée</strong>, non mesurée individuellement.</li>
+        </ul>
+      </section>
+
+      <!-- 03 -->
+      <section class="sec" id="demarche">
+        <h2 class="sec-h"><span class="sec-n">03</span> Démarche</h2>
+
+        <ol class="steps">
+          <li>
+            <h3>Fixer le périmètre avant le nettoyage</h3>
+            <p>
+              Période 2013-2017, à l'échelle des pays, avec les indicateurs à calculer définis dès le départ.
+            </p>
+            <div class="why">
+              <p class="why-l">Pourquoi ce choix</p>
+              <p>
+                Sur des données ouvertes aussi vastes, l'exploration sans cadre produit des
+                dizaines de croisements sans conclusion. Fixer les questions d'abord détermine
+                quelles colonnes nettoyer et quelles tables croiser, et évite de nettoyer
+                ce qui ne servira jamais.
+              </p>
+            </div>
+          </li>
+
+          <li>
+            <h3>Construire les indicateurs manquants</h3>
+            <p>
+              Trois indicateurs ont été calculés : la <strong>proportion de population en
+              sous-nutrition</strong> par pays, le <strong>nombre théorique de personnes que la
+              disponibilité alimentaire permettrait de nourrir</strong>, et le <strong>nombre de
+              personnes nourrissables à partir des seuls produits végétaux</strong>.
+            </p>
+            <div class="why">
+              <p class="why-l">Pourquoi un seuil de 2 500 kcal par jour</p>
+              <p>
+                Convertir une disponibilité calorique en nombre de personnes nourries exige de
+                fixer un besoin individuel de référence. La valeur de 2 500 kcal par jour a été
+                retenue <strong>parce qu'elle est documentée par la FAO</strong>, et non choisie
+                arbitrairement.
+              </p>
+              <p>
+                Ce seuil influence directement le résultat : plus il est bas, plus le nombre de personnes nourrissables augmente.
+              </p>
+            </div>
+          </li>
+        </ol>
+
+        <figure class="fig">
+          <img src="../assets/img/missions/p04-indicateurs.png"
+               alt="Extrait du tableau des indicateurs dérivés, colonnes Zone, Année, Population, Disponibilité alimentaire en kilocalories par personne et par jour, et nombre de personnes nourrissables avec les seuls végétaux, pour dix pays en 2017.">
+          <figcaption><span class="fig-n">Fig. 1</span>
+            Les indicateurs reconstitués pays par pays. Les valeurs de disponibilité
+            s'échelonnent ici de 1 871 kcal par jour en Afghanistan à 2 497 en Oman, toutes en dessous du seuil de référence de 2 500.
+          </figcaption>
+        </figure>
+
+        <ol class="steps" start="3">
+          <li>
+            <h3>Classer et visualiser</h3>
+            <p>
+              Palmarès des pays les plus touchés par la sous-nutrition, des principaux
+              bénéficiaires de l'aide alimentaire, comparatif des disponibilités entre les dix
+              pays les mieux et les moins bien dotés, et évolution de l'aide alimentaire de
+              2013 à 2016 pour les cinq pays les plus aidés.
+            </p>
+          </li>
+
+          <li>
+            <h3>Descendre sur un cas d'étude</h3>
+            <p>
+              Un focus a été mené sur le manioc en Thaïlande, pays affichant 9 % de sa
+              population en situation de sous-nutrition.
+            </p>
+            <div class="why">
+              <p class="why-l">Pourquoi ce cas précis</p>
+              <p>
+                La Thaïlande est un grand exportateur de manioc, et pourtant près d'un habitant sur onze y est en sous-nutrition.
+              </p>
+              <p>
+                Cet exemple montre que <strong>le manque de nourriture n'explique pas tout</strong> : une part de la production part à l'export ou sert à nourrir les animaux.
+              </p>
+            </div>
+          </li>
+        </ol>
+      </section>
+
+      <!-- 04 -->
+      <section class="sec" id="resultats">
+        <h2 class="sec-h"><span class="sec-n">04</span> Résultats &amp; impact</h2>
+
+        <figure class="fig">
+          <img src="../assets/img/missions/p04-top10-sousnutrition.png"
+               alt="Classement des dix pays à plus forte proportion de population sous-alimentée : Haïti 48 %, République populaire démocratique de Corée 47 %, Madagascar 41 %, Libéria 38 %, Tchad 38 %, Lesotho 37 %, Rwanda 35 %, Mozambique 33 %, Timor-Leste 32 %, Afghanistan 29 %.">
+          <figcaption><span class="fig-n">Fig. 2</span>
+            Les dix pays les plus touchés. <strong>Haïti (48 %) et la Corée du Nord (47 %)</strong>
+            comptent près d'un habitant sur deux en sous-nutrition. Le classement mêle des
+            situations très différentes : insularité, isolement politique, conflit, enclavement.
+          </figcaption>
+        </figure>
+
+        <h3>Constats</h3>
+        <ul class="bullets">
+          <li><strong>La sous-nutrition est extrêmement concentrée.</strong> Dans les pays de tête, elle touche entre un tiers et près de la moitié de la population.</li>
+          <li><strong>Le classement des pays les plus touchés ne recoupe pas celui des pays les plus aidés.</strong> L'aide alimentaire dépend aussi de raisons géopolitiques et logistiques.</li>
+          <li><strong>La disponibilité mondiale n'est pas le facteur limitant.</strong> Le calcul des personnes théoriquement nourrissables le confirme : la nourriture existe, mais elle est mal répartie.</li>
+          <li><strong>Le cas thaïlandais démontre l'effet d'usage</strong> : produire en quantité ne garantit pas de nourrir sa population, si la production part à l'export ou vers l'alimentation animale.</li>
+        </ul>
+
+        <h3>Recommandations</h3>
+        <ul class="bullets">
+          <li><strong>Cibler l'aide sur l'écart entre besoin et aide reçue</strong>, plutôt que sur le seul niveau de sous-nutrition.</li>
+          <li><strong>Analyser la destination des productions</strong> dans les pays exportateurs touchés : les solutions y sont surtout commerciales et politiques.</li>
+        </ul>
+      </section>
+
+      <!-- 05 -->
+      <section class="sec" id="limites">
+        <h2 class="sec-h"><span class="sec-n">05</span> Limites &amp; prochaines pistes</h2>
+        <p>
+          <strong>Les disparités sont établies, leurs causes ne le sont pas.</strong> L'étude mesure et classe les pays, sans expliquer les causes. Savoir qu'Haïti affiche 48 % de
+          sous-nutrition ne dit rien de ce qui la produit ni de ce qui la réduirait.
+        </p>
+        <p>
+          <strong>La disponibilité alimentaire ne couvre qu'une seule année.</strong> Impossible
+          de distinguer une situation structurelle d'un accident conjoncturel (mauvaise récolte, crise ponctuelle).
+        </p>
+        <p>
+          <strong>Les calculs de personnes nourrissables sont théoriques.</strong> Ils supposent
+          une redistribution parfaite, sans perte, sans logistique et sans contrainte politique.
+        </p>
+        <p>
+          <strong>La moyenne nationale masque les inégalités internes.</strong> Un pays à
+          disponibilité moyenne satisfaisante peut abriter des régions en situation critique.
+        </p>
+
+        <h3>Prochaines pistes</h3>
+        <ul class="bullets">
+          <li>Étendre la disponibilité alimentaire sur plusieurs années pour distinguer structurel et conjoncturel.</li>
+          <li>Croiser avec des indicateurs économiques et politiques pour dépasser le constat et approcher les causes.</li>
+          <li>Descendre à l'échelle infranationale là où les données existent.</li>
+          <li>Étudier la répartition des usages (alimentation humaine, animale, industrielle) pour quantifier l'effet mis en évidence par le cas thaïlandais.</li>
+        </ul>
+      </section>
+
+    </article>
+  </div>
+
+  <nav class="shell m-nav" aria-label="Navigation entre les missions">
+    <a href="p05-dataimmo.html"><span>← Mission précédente</span><strong>Base immobilière DATAImmo</strong></a>
+    <a class="nx" href="p02-grand-marche.html"><span>Mission suivante →</span><strong>Chute de chiffre d'affaires</strong></a>
+  </nav>
+
+</main>
+
+<footer class="site-foot shell">
+  <span>Suzanne Dong · Data Analyst · <a href="mailto:dong.suzanne@hotmail.com">dong.suzanne@hotmail.com</a></span>
+  <span><a href="../index.html">Accueil</a> · <a href="#main">Haut de page</a></span>
+</footer>
+
+<script src="../assets/js/main.js"></script>
+</body>
+</html>

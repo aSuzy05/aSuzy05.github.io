@@ -1,0 +1,301 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>try{var t=localStorage.getItem('theme');if(t==='light'||t==='dark')document.documentElement.dataset.theme=t}catch(e){}</script>
+<title>Performance produit BottleNeck · Suzanne Dong</title>
+<meta name="description" content="Réconciliation des données ERP et site marchand d'un caviste en ligne : chiffre d'affaires, taux de marge, rotation de stock et valeurs aberrantes.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..700&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+<a class="skip" href="#main">Aller au contenu</a>
+
+<header class="site-head">
+  <div class="shell head-in">
+    <a class="brand" href="../index.html">Suzanne Dong <span>Data Analyst</span></a>
+    <nav class="site-nav" aria-label="Navigation principale">
+      <!-- <a href="../index.html#phares">Missions phares</a> -->
+      <a href="../index.html#competences">Compétences</a>
+      <a href="../index.html#missions">Projets</a>
+      <a href="../veille.html">Veille</a>
+      <a href="../index.html#contact">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+  <section class="m-hero shell">
+    <p class="eyebrow">Mission P06 · Analyse de performance</p>
+    <h1>Suivi performance produits</h1>
+    <div class="m-meta">
+      <span><b>Avril 2025</b></span>
+      <span>Client : <b>BottleNeck</b>, vins &amp; spiritueux en ligne</span>
+      <span>Secteur : <b>E-commerce</b></span>
+    </div>
+    <div class="tags">
+      <span class="tag">Python</span><span class="tag">pandas</span>
+      <span class="tag">Plotly</span><span class="tag">Jointures</span>
+      <span class="tag">Valeurs aberrantes</span>
+    </div>
+  </section>
+
+  <div class="shell m-grid">
+
+    <aside class="rail">
+      <p class="rail-t">Sommaire</p>
+      <ol>
+        <li><a href="#contexte">Contexte &amp; besoin métier</a></li>
+        <li><a href="#donnees">Données</a></li>
+        <li><a href="#demarche">Démarche</a></li>
+        <li><a href="#resultats">Résultats &amp; impact</a></li>
+        <li><a href="#limites">Limites &amp; pistes</a></li>
+        <li><a href="#amelioree">Version améliorée</a></li>
+      </ol>
+    </aside>
+
+    <article class="m-body">
+
+      <ul class="kpis">
+        <li><span class="kpi-v">154 798 €</span><span class="kpi-l">de chiffre d'affaires reconstitué</span></li>
+        <li><span class="kpi-v">36</span><span class="kpi-l">articles au prix atypique, soit 4,4 %</span></li>
+        <li><span class="kpi-v">2 338</span><span class="kpi-l">lignes issues de deux systèmes distincts</span></li>
+      </ul>
+
+      <!-- 01 -->
+      <section class="sec" id="contexte">
+        <h2 class="sec-h"><span class="sec-n">01</span> Contexte &amp; besoin métier</h2>
+        <p class="lede">
+          Un caviste en ligne veut savoir quels produits sont vraiment rentables. Pour y
+          répondre, il faut croiser deux systèmes.
+        </p>
+        <p>
+          L'ERP connaît les prix d'achat, les prix de vente et les stocks ; le site marchand
+          connaît les ventes et les pages produit. Les deux utilisent des identifiants
+          différents, ce qui <strong>empêche de relier ce qu'un produit rapporte à ce qu'il
+          coûte</strong>.
+        </p>
+        <p>
+          Trois questions concrètes : quel est le chiffre d'affaires réel par produit, quels
+          articles se vendent à perte, et quels articles immobilisent du stock sans tourner.
+        </p>
+      </section>
+
+      <!-- 02 -->
+      <section class="sec" id="donnees">
+        <h2 class="sec-h"><span class="sec-n">02</span> Données</h2>
+        <p>Trois fichiers Excel, de structures très inégales :</p>
+        <div class="dtable">
+          <table>
+            <caption>Sources à réconcilier</caption>
+            <thead>
+              <tr><th scope="col">Fichier</th><th scope="col">Rôle</th><th scope="col" class="num">Colonnes</th><th scope="col" class="num">Lignes</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>ERP</td><td>Prix, stocks, statut de stock</td><td class="num">6</td><td class="num">825</td></tr>
+              <tr><td>Site marchand</td><td>Ventes et fiches produit</td><td class="num">29</td><td class="num">1 513</td></tr>
+              <tr><td>Table de liaison</td><td>Correspondance des identifiants</td><td class="num">2</td><td class="num">825</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>Qualité et limites</h3>
+        <ul class="bullets">
+          <li><strong>Volumes incohérents</strong> entre les deux systèmes : 825 références côté ERP contre 1 513 côté web. L'écart devait être expliqué avant toute jointure.</li>
+          <li><strong>Doublons d'identifiants produit</strong> dans les deux sources.</li>
+          <li><strong>Stocks incohérents</strong> : des articles déclarés en rupture affichaient une quantité positive, et inversement.</li>
+          <li><strong>Aucune dimension temporelle exploitable</strong> : l'analyse donne une photographie à une date, sans tendance.</li>
+        </ul>
+      </section>
+
+      <!-- 03 -->
+      <section class="sec" id="demarche">
+        <h2 class="sec-h"><span class="sec-n">03</span> Démarche</h2>
+
+        <ol class="steps">
+          <li>
+            <h3>Explorer chaque source séparément avant de les croiser</h3>
+            <p>
+              Structure, types, valeurs manquantes et doublons ont été examinés fichier par
+              fichier, avant toute tentative de rapprochement.
+            </p>
+            <div class="why">
+              <p class="why-l">Pourquoi ce choix</p>
+              <p>
+                Si l'on fait la jointure avant de nettoyer les fichiers, les doublons se multiplient et on ne sait plus de quel fichier vient une erreur. Nettoyer chaque fichier d'abord permet de retrouver l'origine de chaque ligne.
+              </p>
+            </div>
+          </li>
+
+          <li>
+            <h3>Arbitrer sur les incohérences de stock</h3>
+            <p>
+              Deux traitements distincts : suppression des lignes aberrantes sur le prix, et
+              remise à zéro des quantités contredisant le statut de stock déclaré.
+            </p>
+            <div class="why">
+              <p class="why-l">Pourquoi deux traitements différents</p>
+              <p>
+                Un prix aberrant est probablement une erreur de saisie et n'a pas de valeur
+                corrigeable. Une quantité en contradiction avec son statut, en revanche, relève
+                d'un arbitrage : <strong>le statut a été considéré comme la source de vérité</strong>,
+                parce qu'il est mis à jour par le processus logistique, alors que la quantité
+                peut rester figée après un mouvement non enregistré.
+              </p>
+            </div>
+          </li>
+
+          <li>
+            <h3>Enchaîner deux jointures</h3>
+            <p>
+              D'abord une jointure entre l'ERP et la table de liaison, qui garde tous les produits de l'ERP (jointure à gauche). Puis une jointure avec les données du site, qui garde aussi les produits présents d'un seul côté (jointure externe).
+            </p>
+            <div class="why">
+              <p class="why-l">Pourquoi ce choix</p>
+              <p>
+                La première jointure garde tous les produits de l'ERP. La seconde fait apparaître <strong>deux anomalies</strong> : des produits en stock jamais mis en ligne, et des produits vendus en ligne absents de l'ERP. Une jointure interne les aurait fait disparaître sans le signaler.
+              </p>
+            </div>
+          </li>
+
+          <li>
+            <h3>Examiner les prix atypiques sans les supprimer d'office</h3>
+            <p>
+              Analyse univariée du prix par boîte à moustaches et par histogramme. Le seuil
+              interquartile haut s'établit à <strong>83,3 €</strong>, au-delà duquel se situent
+              <strong>36 articles, soit 4,4 % du catalogue</strong>.
+            </p>
+            <div class="why">
+              <p class="why-l">Pourquoi ne pas les écarter</p>
+              <p>
+                Chez un caviste, un prix élevé n'est pas une anomalie mais un positionnement.
+                Les 36 articles concernés sont vraisemblablement des grands crus ou des
+                spiritueux de garde, qui font le cœur de la marge. Les traiter comme des valeurs
+                aberrantes statistiques aurait supprimé les produits les plus rentables de l'analyse.
+              </p>
+              <p>
+                Le seuil interquartile a donc servi à <strong>identifier un segment à examiner</strong>,
+                pas à filtrer. La règle statistique signale, le métier tranche.
+              </p>
+            </div>
+          </li>
+
+          <li>
+            <h3>Calculer les indicateurs de performance et leurs liens</h3>
+            <p>
+              Chiffre d'affaires par produit, taux de marge, rotation de stock, puis étude des
+              corrélations entre prix, ventes et quantités détenues.
+            </p>
+          </li>
+        </ol>
+
+        <figure class="fig">
+          <img src="../assets/img/missions/p06-correlation.png"
+               alt="Matrice de corrélation entre quantité en stock, ventes totales et prix. La corrélation entre prix et ventes totales est de −0,27, celle entre stock et ventes de 0,29, celle entre stock et prix de −0,084.">
+          <figcaption><span class="fig-n">Fig. 1</span>
+            Corrélations entre stock, ventes et prix. Le lien négatif entre prix et volume de
+            ventes (−0,27) reste modéré : les articles chers se vendent moins, mais le prix est
+            loin d'expliquer à lui seul les écarts de rotation.
+          </figcaption>
+        </figure>
+      </section>
+
+      <!-- 04 -->
+      <section class="sec" id="resultats">
+        <h2 class="sec-h"><span class="sec-n">04</span> Résultats &amp; impact</h2>
+        <p class="lede">
+          Chiffre d'affaires total reconstitué : <strong>154 798,40 €</strong>. Surtout, le
+          rapprochement a rendu visibles deux catégories de produits jusque-là invisibles : ceux vendus à marge négative, et ceux qui immobilisent du stock sans tourner.
+        </p>
+
+        <figure class="fig">
+          <img src="../assets/img/missions/p06-marge-produit.png"
+               alt="Diagramme en barres du taux de marge moyen par type de produit : Cognac 54,22 %, Whisky 54,10 %, Gin 52,33 %, Vin 48,34 %, catégorie Autre 46,81 %, Champagne 40,39 %, Huile d'olive 37,52 %.">
+          <figcaption><span class="fig-n">Fig. 2</span>
+            Taux de marge moyen par famille. Les spiritueux dominent (cognac et whisky à plus de 54 %), tandis que le champagne (40,4 %) et l'huile d'olive (37,5 %) ferment la
+            marche. Un écart de près de <strong>17 points</strong> entre la première et la
+            dernière famille.
+          </figcaption>
+        </figure>
+
+        <h3>Constats</h3>
+        <ul class="bullets">
+          <li><strong>La hiérarchie des marges ne recoupe pas celle des volumes.</strong> Les familles les plus rentables ne sont pas les plus vendues : arbitrer sur le seul chiffre d'affaires conduirait à mettre en avant les mauvais produits.</li>
+          <li><strong>Des produits à marge négative</strong> ont été identifiés : vendus en dessous de leur coût d'acquisition, ils détruisent de la valeur à chaque vente.</li>
+          <li><strong>Des produits en surstock</strong> immobilisent de la trésorerie : un coût réel, mais qui n'apparaît dans aucun compte de résultat.</li>
+          <li><strong>36 articles au-dessus de 83,3 €</strong> constituent un segment premium distinct, à piloter séparément du reste du catalogue.</li>
+        </ul>
+
+        <h3>Recommandations</h3>
+        <ul class="bullets">
+          <li><strong>Traiter les produits à marge négative en priorité</strong> : renégocier l'achat, relever le prix, ou sortir la référence. C'est l'action au retour le plus immédiat.</li>
+          <li><strong>Déstocker les références sans rotation</strong>, même à marge réduite : le capital immobilisé coûte plus cher que la remise consentie.</li>
+          <li><strong>Mettre en avant les spiritueux</strong> dans les recommandations du site, où chaque vente rapporte structurellement davantage.</li>
+          <li><strong>Corriger les identifiants à la source.</strong> La divergence ERP / site est un problème de processus ; le rapprochement analytique ne fait que le contourner.</li>
+        </ul>
+      </section>
+
+      <!-- 05 -->
+      <section class="sec" id="limites">
+        <h2 class="sec-h"><span class="sec-n">05</span> Limites &amp; prochaines pistes</h2>
+        <p>
+           Pas de distinction temporelle, impossibilité de distinguer un produit en déclin d'un produit saisonnier. Un champagne
+          qui ne tourne pas en avril n'est pas un produit mort.
+        </p>
+        <p>
+          <strong>Les corrélations observées restent faibles.</strong> Aucune ne dépasse 0,29 en
+          valeur absolue : les leviers de la performance produit sont ailleurs que dans ces trois variables, par exemple la notoriété, le référencement ou la visibilité sur le site.
+        </p>
+        <p>
+          <strong>Le taux de marge ignore les coûts indirects</strong> : stockage, logistique,
+          casse. La rentabilité réelle des produits fragiles ou volumineux est donc surestimée.
+        </p>
+
+        <h3>Prochaines pistes</h3>
+        <ul class="bullets">
+          <li>Reconduire l'analyse sur plusieurs mois pour distinguer saisonnalité et déclin réel.</li>
+          <li>Intégrer les coûts logistiques pour passer d'un taux de marge brut à une marge contributive.</li>
+          <li>Croiser avec les données de trafic des fiches produit, pour séparer un produit qui ne plaît pas d'un produit que personne ne voit.</li>
+          <li>Automatiser le rapprochement pour en faire un indicateur de suivi plutôt qu'une étude ponctuelle.</li>
+        </ul>
+      </section>
+
+      <!-- 06 -->
+      <section class="sec" id="amelioree">
+        <h2 class="sec-h"><span class="sec-n">06</span> Version améliorée (2026)</h2>
+        <p>
+          Ce projet a été repris en 2026 pour fiabiliser les données et automatiser les contrôles
+          de cohérence, jusque-là réalisés manuellement. La veille menée pour cette reprise (outils d'analyse exploratoire comparés, évolutions de Pandas 3.0) est présentée sur la
+          <a href="../veille.html">page Veille</a>.
+        </p>
+        <p>La nouvelle version corrige plusieurs chiffres de cette page :</p>
+        <ul class="bullets">
+          <li><strong>Chiffre d'affaires : 143 680 €</strong> au lieu de 154 798 €. Tout l'écart vient des ventes comptées deux fois : 4 produits aux ventes gonflées (10 943 €) et un bon cadeau (175 €).</li>
+          <li><strong>Corrélation entre prix et ventes : −0,52</strong> au lieu de −0,27, une fois ces ventes corrigées.</li>
+          <li><strong>Prix négatifs : 3 signes corrigés</strong>, au lieu de supprimer les 3 produits.</li>
+        </ul>
+        <p><a class="btn" href="p13-bottleneck-ameliore.html">Voir la version améliorée (P13)</a></p>
+      </section>
+
+    </article>
+  </div>
+
+  <nav class="shell m-nav" aria-label="Navigation entre les missions">
+    <a href="p07-suivi-projets.html"><span>← Mission précédente</span><strong>Suivi de projets internationaux</strong></a>
+    <a class="nx" href="p05-dataimmo.html"><span>Mission suivante →</span><strong>Base immobilière DATAImmo</strong></a>
+  </nav>
+
+</main>
+
+<footer class="site-foot shell">
+  <span>Suzanne Dong · Data Analyst · <a href="mailto:dong.suzanne@hotmail.com">dong.suzanne@hotmail.com</a></span>
+  <span><a href="../index.html">Accueil</a> · <a href="#main">Haut de page</a></span>
+</footer>
+
+<script src="../assets/js/main.js"></script>
+</body>
+</html>
